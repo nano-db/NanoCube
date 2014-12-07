@@ -8,6 +8,7 @@ class NanoCube(object):
         self.location_granularity = locGranularity
 
         # Init dimensions
+        self.dimensions = dimensions
         self.dim_mapping = dict()
         for dim in dimensions:
             self.dim_mapping[dim] = dict()
@@ -49,9 +50,10 @@ class NanoCube(object):
 
         ret = []
         if level <= self.location_granularity:
-            ret = self._get_location_keys(entry, level)
+            ret += self._get_location_keys(entry, level)
         else:
-            ret = self._get_location_keys(entry, self.location_granularity)
+            ret += self._get_location_keys(entry, self.location_granularity)
+            ret += self._get_category_keys(entry, level)
 
         return ret
 
@@ -91,5 +93,19 @@ class NanoCube(object):
 
         return keys
 
-    def _get_category_key(self, entry, level):
-        pass
+    def _get_category_keys(self, entry, level):
+        keys = []
+        considered_levels = level - self.location_granularity
+        for i in range(considered_levels):
+            dim_name = self.dimensions[i]
+            mapping = self.dim_mapping[dim_name]
+            print(dim_name, mapping, len(mapping))
+            if mapping.get(entry.get(dim_name)) is not None:
+                keys.append(mapping.get(entry.get(dim_name)))
+            else:
+                new_key = str(len(mapping))
+                mapping[entry.get(dim_name)] = new_key
+                keys.append(new_key)
+        return keys
+
+
