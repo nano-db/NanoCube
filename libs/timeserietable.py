@@ -67,7 +67,7 @@ class TimeSerieTable(object):
             begin_bin = 0
 
         end_bin = self._get_bin_number(end)
-        if end_bin > self.start + len(self.table) * self.bin_size:
+        if end_bin >= len(self.table):
             end_bin = len(self.table) - 1
 
         return self.table[end_bin]['sum'] - self.table[begin_bin]['sum']
