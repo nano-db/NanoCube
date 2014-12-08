@@ -1,4 +1,5 @@
 from libs.node import Node
+from libs.timeserietable import TimeSerieTable
 
 
 class NanoCube(object):
@@ -15,36 +16,59 @@ class NanoCube(object):
 
     def add(self, entry):
         updated_nodes = []
-        self._add_node(entry, 1, updated_nodes)
+        self._add_node(self.world, entry, 1, updated_nodes)
 
-    def _add_node(self, entry, level, updated_nodes):
+    def get_dimension(self):
+        return len(self.dimensions) + self.location_granularity
+
+    def _add_node(self, root, entry, level, updated_nodes):
         child = None
         keys = self._keys_at_level(entry, level)
         stack = self._trail_proper_path(keys)
         while len(stack) > 0:
             n = stack.pop()
             update = False
+
             if n.has_a_single_child():
                 n.set_shared_content(child)
+            elif n.content is None:
+                dim = self.get_dimension()
+                if level == dim:
+                    n.set_proper_content(TimeSerieTable())
+                else:
+                    n.set_proper_content(Node())
+                update = True
+            elif n.has_shared_content() and n.content not in updated_nodes:
+                raise Exception("Not implemented")
+                update = True
+            elif n.has_proper_content():
+                update = True
+
+            if update:
+                if level == self.get_dimension():
+                    raise Exception("Add time")
+                else:
+                    self._add_node(n.content, entry, level + 1, updated_nodes)
+                updated_nodes.append(n.content)
+            child = n
 
     def _trail_proper_path(self, keys):
         stack = []
-        stack.append(self.root)
-        n = self.root
+        stack.append(self.world)
+        n = self.world
         for key in keys:
             child = n.get_child(key)
             if child is None:
                 child = Node()
-                n.add_proper_child(child)
+                n.add_proper_child(key, child)
             elif Node.is_shared_child(n, child):
-                # To handle
-                pass
+                raise Exception("Not implemented")
             stack.append(child)
             n = child
         return stack
 
     def _keys_at_level(self, entry, level):
-        maxLevel = len(self.dimensions) + self.location_granularity + 1
+        maxLevel = self.get_dimension()
         if level < 1 or level > maxLevel:
             raise AttributeError
 
@@ -99,7 +123,6 @@ class NanoCube(object):
         for i in range(considered_levels):
             dim_name = self.dimensions[i]
             mapping = self.dim_mapping[dim_name]
-            print(dim_name, mapping, len(mapping))
             if mapping.get(entry.get(dim_name)) is not None:
                 keys.append(mapping.get(entry.get(dim_name)))
             else:
@@ -108,4 +131,7 @@ class NanoCube(object):
                 keys.append(new_key)
         return keys
 
-
+    def _shallow_copy(node):
+        copied_node = Node()
+        copied_node.set_shared_content(node.content)
+        return copied_node

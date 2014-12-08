@@ -22,3 +22,12 @@ class Node(object):
 
     def set_shared_content(self, node):
         self.shared_content = node
+
+    def set_proper_content(self, node):
+        self.content = node
+
+    def get_child(self, key):
+        return self.proper_childrens.get(key)
+
+    def add_proper_child(self, key, node):
+        self.proper_childrens[key] = node

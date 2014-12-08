@@ -3,9 +3,12 @@ from libs.nanocube import NanoCube
 
 
 class TestNanoCube:
-    def create_sample_cube():
+    def create_sample_cube(**kargs):
         dimensions = ["Description", "Type"]
-        return NanoCube(dimensions, 4)
+        if 'loc' in kargs:
+            return NanoCube(dimensions, kargs['loc'])
+        else:
+            return NanoCube(dimensions, 4)
 
     def test_get_location_key(self):
         cube = TestNanoCube.create_sample_cube()
@@ -37,3 +40,25 @@ class TestNanoCube:
         }
         ret = cube._get_category_keys(entry, 6)
         assert_equals(ret, ["1", "0"])
+
+    def test_keys_at_level(self):
+        cube = TestNanoCube.create_sample_cube(loc=2)
+        entry = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Description': 'Foo',
+            'Type': 'Bar'
+        }
+        ret = cube._keys_at_level(entry, 4)
+        assert_equals(ret, ["0,1", "00,10", "0", "0"])
+
+    def test_add_node(self):
+        cube = TestNanoCube.create_sample_cube(loc=2)
+        entry = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Description': 'Foo',
+            'Type': 'Bar'
+        }
+        cube.add(entry)
+
