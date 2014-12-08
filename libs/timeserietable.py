@@ -1,6 +1,7 @@
 from math import floor
 from datetime import timedelta
 
+
 class TimeSerieTable(object):
     def __init__(self, bin_size=3600):
         super(TimeSerieTable, self).__init__()
@@ -20,6 +21,9 @@ class TimeSerieTable(object):
         else:
             bin_num = self._get_bin_number(time)
             self._expand_table(time, bin_num)
+
+            if bin_num < 0:
+                bin_num = 0
 
             self.table[bin_num]['sum'] += 1
             self.table[bin_num]['count'] += 1
@@ -44,11 +48,10 @@ class TimeSerieTable(object):
                 }
                 self.table.insert(0, new_bin)
         else:
-            final_sum = self.table[len(self.table)]['sum']
-            final_count = self.table[len(self.table)]['count']
-            for _ in range(bin_num - len(self.table)):
+            final_sum = self.table[len(self.table) - 1]['sum']
+            for _ in range(bin_num - len(self.table) + 1):
                 new_bin = {
-                    'count': final_count,
+                    'count': 0,
                     'sum': final_sum
                 }
                 self.table.append(new_bin)
