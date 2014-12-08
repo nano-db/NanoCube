@@ -1,5 +1,5 @@
 from math import floor
-
+from datetime import timedelta
 
 class TimeSerieTable(object):
     def __init__(self, bin_size=3600):
@@ -35,7 +35,8 @@ class TimeSerieTable(object):
             return
 
         if bin_num < 0:
-            self.start = time
+            diff_sec = bin_num * self.bin_size
+            self.start = self.start + timedelta(seconds=diff_sec)
             for _ in range(abs(bin_num)):
                 new_bin = {
                     'count': 0,
