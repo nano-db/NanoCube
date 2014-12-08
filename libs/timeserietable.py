@@ -1,5 +1,8 @@
+from math import floor
+
+
 class TimeSerieTable(object):
-    def __init__(self, bin_size=1000):
+    def __init__(self, bin_size=3600):
         super(TimeSerieTable, self).__init__()
         self.start = None
         self.bin_size = bin_size
@@ -15,7 +18,7 @@ class TimeSerieTable(object):
             self.table.append(new_bin)
 
         else:
-            bin_num = (time - self.start) / self.bin_size
+            bin_num = self._get_bin_number(time)
             self._expand_table(time, bin_num)
 
             self.table[bin_num]['sum'] += 1
@@ -23,11 +26,16 @@ class TimeSerieTable(object):
 
             self._update_following_bins(bin_num)
 
+    def _get_bin_number(self, time):
+        delta = (time - self.start).total_seconds() / self.bin_size
+        return floor(delta)
+
     def _expand_table(self, time, bin_num):
-        if bin_num > 0 and bin_num < len(self.table):
+        if bin_num >= 0 and bin_num < len(self.table):
             return
 
         if bin_num < 0:
+            self.start = time
             for _ in range(abs(bin_num)):
                 new_bin = {
                     'count': 0,
@@ -50,11 +58,11 @@ class TimeSerieTable(object):
             self.table[i]['sum'] = new_sum
 
     def query(self, begin, end):
-        begin_bin = (begin - self.start) / self.bin_size
+        begin_bin = self._get_bin_number(begin)
         if begin_bin < 0:
             begin_bin = 0
 
-        end_bin = (end - self.start) / self.bin_size
+        end_bin = self._get_bin_number(end)
         if end_bin > self.start + len(self.table) * self.bin_size:
             end_bin = len(self.table) - 1
 
