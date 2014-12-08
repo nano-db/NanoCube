@@ -1,9 +1,10 @@
 from nose.tools import assert_equals
+from datetime import datetime
 from libs.nanocube import NanoCube
 
 
 class TestNanoCube:
-    def create_sample_cube(**kargs):
+    def create_sample_cube(slef, **kargs):
         dimensions = ["Description", "Type"]
         if 'loc' in kargs:
             return NanoCube(dimensions, kargs['loc'])
@@ -11,7 +12,7 @@ class TestNanoCube:
             return NanoCube(dimensions, 4)
 
     def test_get_location_key(self):
-        cube = TestNanoCube.create_sample_cube()
+        cube = self.create_sample_cube()
         sf = {
             'Longitude': -122.394685,
             'Latitude': 37.803015
@@ -27,7 +28,7 @@ class TestNanoCube:
         assert_equals(ret, ["1,0", "11,01"])
 
     def test_get_category_keys(self):
-        cube = TestNanoCube.create_sample_cube()
+        cube = self.create_sample_cube()
         entry = {
             'Description': 'Foo',
             'Type': 'Bar',
@@ -42,7 +43,7 @@ class TestNanoCube:
         assert_equals(ret, ["1", "0"])
 
     def test_keys_at_level(self):
-        cube = TestNanoCube.create_sample_cube(loc=2)
+        cube = self.create_sample_cube(loc=2)
         entry = {
             'Longitude': -122.394685,
             'Latitude': 37.803015,
@@ -53,12 +54,12 @@ class TestNanoCube:
         assert_equals(ret, ["0,1", "00,10", "0", "0"])
 
     def test_add_node(self):
-        cube = TestNanoCube.create_sample_cube(loc=2)
+        cube = self.create_sample_cube(loc=2)
         entry = {
             'Longitude': -122.394685,
             'Latitude': 37.803015,
             'Description': 'Foo',
-            'Type': 'Bar'
+            'Type': 'Bar',
+            'Time': datetime(2005, 7, 12, 10, 5, 1)
         }
         cube.add(entry)
-

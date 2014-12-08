@@ -46,7 +46,7 @@ class NanoCube(object):
 
             if update:
                 if level == self.get_dimension():
-                    raise Exception("Add time")
+                    n.content.insert(entry['Time'])
                 else:
                     self._add_node(n.content, entry, level + 1, updated_nodes)
                 updated_nodes.append(n.content)

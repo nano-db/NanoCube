@@ -32,7 +32,7 @@ class TimeSerieTable(object):
 
     def _get_bin_number(self, time):
         delta = (time - self.start).total_seconds() / self.bin_size
-        return floor(delta)
+        return int(floor(delta))
 
     def _expand_table(self, time, bin_num):
         if bin_num >= 0 and bin_num < len(self.table):

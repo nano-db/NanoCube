@@ -13,10 +13,9 @@ def main():
             data = dict()
             data['Longitude'] = float(row['Longitude'])
             data['Latitude'] = float(row['Latitude'])
-            data['Date'] = datetime.datetime.strptime(row['time'], parser)
+            data['Time'] = datetime.datetime.strptime(row['time'], parser)
             data['Description'] = row['crime']
             cube.add(data)
-    print(cube)
 
 
 if __name__ == '__main__':
