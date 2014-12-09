@@ -32,3 +32,9 @@ class Node(object):
 
     def add_proper_child(self, key, node):
         self.proper_children[key] = node
+
+    def get_content(self):
+        if self.shared_content is not None:
+            return self.shared_content
+        else:
+            return self.content

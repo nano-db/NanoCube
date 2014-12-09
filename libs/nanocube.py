@@ -30,7 +30,7 @@ class NanoCube(object):
             update = False
 
             if n.has_a_single_child():
-                n.set_shared_content(child)
+                n.set_shared_content(child.get_content())
             elif n.content is None:
                 dim = self.get_dimension()
                 if level == dim:

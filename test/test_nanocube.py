@@ -96,3 +96,6 @@ class TestNanoCube:
         assert_equals(len(node.proper_children), 1)
         node = node.get_child('0').content
         assert(isinstance(node, TimeSerieTable))
+
+        table = world.shared_content.shared_content.shared_content
+        assert(isinstance(table, TimeSerieTable))
