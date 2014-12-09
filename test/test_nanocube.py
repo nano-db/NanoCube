@@ -33,14 +33,15 @@ class TestNanoCube:
             'Description': 'Foo',
             'Type': 'Bar',
         }
-        ret = cube._get_category_keys(entry, 6)
-        assert_equals(ret, ["0", "0"])
+        assert_equals(cube._get_category_keys(entry, 2), ["0"])
+        assert_equals(cube._get_category_keys(entry, 3), ["0"])
+
         entry = {
             'Description': 'Bar',
             'Type': 'Bar',
         }
-        ret = cube._get_category_keys(entry, 6)
-        assert_equals(ret, ["1", "0"])
+        assert_equals(cube._get_category_keys(entry, 2), ["1"])
+        assert_equals(cube._get_category_keys(entry, 3), ["0"])
 
     def test_keys_at_level(self):
         cube = self.create_sample_cube(loc=2)
@@ -50,8 +51,26 @@ class TestNanoCube:
             'Description': 'Foo',
             'Type': 'Bar'
         }
-        ret = cube._keys_at_level(entry, 4)
-        assert_equals(ret, ["0,1", "00,10", "0", "0"])
+
+        keys = [["0,1", "00,10"], ["0"], ["0"]]
+        for i, keys in enumerate(keys):
+            print(i, keys)
+            ret = cube._keys_at_level(entry, i + 1)
+            assert_equals(ret, keys)
+
+        entry = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Description': 'Bar',
+            'Type': 'Bar'
+        }
+
+        keys = [["0,1", "00,10"], ["1"], ["0"]]
+        for i, keys in enumerate(keys):
+            print(i, keys)
+            ret = cube._keys_at_level(entry, i + 1)
+            assert_equals(ret, keys)
+
 
     def test_add_node(self):
         cube = self.create_sample_cube(loc=2)

@@ -19,12 +19,12 @@ class NanoCube(object):
         self._add_node(self.world, entry, 1, updated_nodes)
 
     def get_dimension(self):
-        return len(self.dimensions) + self.location_granularity
+        return len(self.dimensions) + 2
 
     def _add_node(self, root, entry, level, updated_nodes):
         child = None
         keys = self._keys_at_level(entry, level)
-        stack = self._trail_proper_path(keys)
+        stack = self._trail_proper_path(root, keys)
         while len(stack) > 0:
             n = stack.pop()
             update = False
@@ -52,10 +52,10 @@ class NanoCube(object):
                 updated_nodes.append(n.content)
             child = n
 
-    def _trail_proper_path(self, keys):
+    def _trail_proper_path(self, root, keys):
         stack = []
-        stack.append(self.world)
-        n = self.world
+        n = root
+        stack.append(root)
         for key in keys:
             child = n.get_child(key)
             if child is None:
@@ -68,18 +68,10 @@ class NanoCube(object):
         return stack
 
     def _keys_at_level(self, entry, level):
-        maxLevel = self.get_dimension()
-        if level < 1 or level > maxLevel:
-            raise AttributeError
-
-        ret = []
-        if level <= self.location_granularity:
-            ret += self._get_location_keys(entry, level)
+        if level == 1:
+            return self._get_location_keys(entry, self.location_granularity)
         else:
-            ret += self._get_location_keys(entry, self.location_granularity)
-            ret += self._get_category_keys(entry, level)
-
-        return ret
+            return self._get_category_keys(entry, level)
 
     def _get_location_keys(self, entry, level):
         keys = []
@@ -118,18 +110,17 @@ class NanoCube(object):
         return keys
 
     def _get_category_keys(self, entry, level):
-        keys = []
-        considered_levels = level - self.location_granularity
-        for i in range(considered_levels):
-            dim_name = self.dimensions[i]
-            mapping = self.dim_mapping[dim_name]
-            if mapping.get(entry.get(dim_name)) is not None:
-                keys.append(mapping.get(entry.get(dim_name)))
-            else:
-                new_key = str(len(mapping))
-                mapping[entry.get(dim_name)] = new_key
-                keys.append(new_key)
-        return keys
+        selected_level = level - 2
+        dim_name = self.dimensions[selected_level]
+        mapping = self.dim_mapping[dim_name]
+
+        if mapping.get(entry.get(dim_name)) is None:
+            new_key = str(len(mapping))
+            mapping[entry.get(dim_name)] = new_key
+            return [new_key]
+        else:
+            return [mapping.get(entry.get(dim_name))]
+
 
     def _shallow_copy(node):
         copied_node = Node()
