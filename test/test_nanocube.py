@@ -1,5 +1,6 @@
 from nose.tools import assert_equals
 from datetime import datetime
+from libs.timeserietable import TimeSerieTable
 from libs.nanocube import NanoCube
 
 
@@ -72,7 +73,7 @@ class TestNanoCube:
             assert_equals(ret, keys)
 
 
-    def test_add_node(self):
+    def test_simple_add(self):
         cube = self.create_sample_cube(loc=2)
         entry = {
             'Longitude': -122.394685,
@@ -82,3 +83,16 @@ class TestNanoCube:
             'Time': datetime(2005, 7, 12, 10, 5, 1)
         }
         cube.add(entry)
+
+        world = cube.world
+        assert_equals(len(world.proper_children), 1)
+        node = world.get_child('0,1')
+        assert_equals(len(node.proper_children), 1)
+        node = node.get_child('00,10')
+        assert_equals(len(node.proper_children), 0)
+        node = node.content
+        assert_equals(len(node.proper_children), 1)
+        node = node.get_child('0').content
+        assert_equals(len(node.proper_children), 1)
+        node = node.get_child('0').content
+        assert(isinstance(node, TimeSerieTable))
