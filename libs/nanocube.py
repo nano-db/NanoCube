@@ -19,7 +19,7 @@ class NanoCube(object):
         self._add_node(self.world, entry, 1, updated_nodes)
 
     def get_dimension(self):
-        return len(self.dimensions) + 2
+        return len(self.dimensions) + 1
 
     def _add_node(self, root, entry, level, updated_nodes):
         child = None
@@ -111,6 +111,9 @@ class NanoCube(object):
 
     def _get_category_keys(self, entry, level):
         selected_level = level - 2
+        if selected_level >= len(self.dimensions):
+            return []
+
         dim_name = self.dimensions[selected_level]
         mapping = self.dim_mapping[dim_name]
 

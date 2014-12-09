@@ -2,13 +2,13 @@
 class Node(object):
     def __init__(self):
         super(Node, self).__init__()
-        self.proper_childrens = dict()
+        self.proper_children = dict()
         self.shared_child = None
         self.content = None
         self.shared_content = None
 
     def has_a_single_child(self):
-        return len(self.proper_childrens) == 1
+        return len(self.proper_children) == 1
 
     def has_shared_content(self):
         return self.shared_content is not None
@@ -16,6 +16,7 @@ class Node(object):
     def has_proper_content(self):
         return self.content is not None
 
+    @staticmethod
     def is_shared_child(node, child):
         return (node.shared_child is not None
                 and node.shared_child == child)
@@ -27,7 +28,7 @@ class Node(object):
         self.content = node
 
     def get_child(self, key):
-        return self.proper_childrens.get(key)
+        return self.proper_children.get(key)
 
     def add_proper_child(self, key, node):
-        self.proper_childrens[key] = node
+        self.proper_children[key] = node
