@@ -1,4 +1,4 @@
-from nose.tools import assert_equals
+from nose.tools import assert_equals, assert_is_instance, assert_not_equals, assert_is_none
 from datetime import datetime
 from libs.timeserietable import TimeSerieTable
 from libs.nanocube import NanoCube
@@ -99,3 +99,36 @@ class TestNanoCube:
 
         table = world.shared_content.shared_content.shared_content
         assert(isinstance(table, TimeSerieTable))
+
+    def test_2_simple_add(self):
+        cube = self.create_sample_cube(loc=2)
+        entry = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Description': 'Foo',
+            'Type': 'Bar',
+            'Time': datetime(2005, 7, 12, 10, 5, 1)
+        }
+        cube.add(entry)
+        entry['Time'] = datetime(2005, 7, 12, 10, 10, 1)
+        cube.add(entry)
+
+        world = cube.world
+        table = world.shared_content.shared_content.shared_content
+        assert_equals(table.table[0]['sum'], 2)
+
+    def test_add_2_sub_elements(self):
+        cube = NanoCube(["Type"], 2)
+        entry = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Type': 'IPhone',
+            'Time': datetime(2005, 7, 12, 10, 5, 1)
+        }
+        cube.add(entry)
+        entry['Type'] = 'Android'
+        entry['Time'] = datetime(2005, 7, 12, 10, 7, 1)
+        cube.add(entry)
+
+        assert_is_none(cube.world.shared_content.shared_content)
+        assert_is_instance(cube.world.shared_content.content, TimeSerieTable)
