@@ -29,19 +29,19 @@ class NanoCube(object):
             n = stack.pop()
             update = False
 
-            if n.has_a_single_child():
-                n.set_shared_content(child.get_content())
-            elif n.get_content() is None:
+            if n.has_a_single_child:
+                n.set_shared_content(child.get_content)
+            elif n.get_content is None:
                 dim = self.get_dimension()
                 if level == dim:
                     n.set_proper_content(TimeSerieTable())
                 else:
                     n.set_proper_content(Node())
                 update = True
-            elif n.has_shared_content() and n.get_content() not in updated_nodes:
+            elif n.has_shared_content and n.get_content not in updated_nodes:
                 raise Exception("Not implemented")
                 update = True
-            elif n.has_proper_content():
+            elif n.has_proper_content:
                 update = True
 
             if update:
@@ -126,6 +126,10 @@ class NanoCube(object):
 
 
     def _shallow_copy(node):
-        copied_node = Node()
+        if isinstance(node, Node):
+            copied_node = Node()
         copied_node.set_shared_content(node.get_content())
+        for key in node.content:
+            copied_node.add_proper_child(key)
         return copied_node
+        else:
