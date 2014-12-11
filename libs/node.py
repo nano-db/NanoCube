@@ -62,26 +62,51 @@ class Node(object):
                 and child in node.children.item())
 
     def set_shared_content(self, node):
+        """Set a node as shared content
+
+        :param node:Node
+        """
         self.proper_content = None
         self.shared_content = node
 
     def set_proper_content(self, node):
+        """Set a node as proper content
+
+        :param node:Node
+        """
         self.shared_content = None
         self.proper_content = node
 
     def get_child(self, key):
+        """Return the node linked by the key
+        If no node is found return None
+
+        :type key:str
+        :rtype:Node
+        """
         if self.proper_children.get(key) is not None:
             return self.proper_children.get(key)
         else:
             return self.shared_children.get(key)
 
     def add_proper_child(self, key, node):
+        """Add the node as proper child link by key
+        If there is already a shared child, this child is deleted
+
+        :type node:Node
+        """
+        if self.shared_children.get(key) is not None:
+            del self.shared_children[key]
         self.proper_children[key] = node
 
     def add_shared_child(self, key, node):
         self.shared_children[key] = node
 
     def copy(self):
+        """Execute a shallow copy of the node
+
+        :rtype:Node
+        """
         node_copy = Node()
         node_copy.set_shared_content(self.content)
         for key in self.children:

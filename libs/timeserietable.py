@@ -71,3 +71,10 @@ class TimeSerieTable(object):
             end_bin = len(self.table) - 1
 
         return self.table[end_bin]['sum'] - self.table[begin_bin]['sum']
+
+    def copy(self):
+        table_copy = TimeSerieTable()
+        table_copy.bin_size = self.bin_size
+        table_copy.start = self.start
+        table_copy.table = self.table[:]
+        return table_copy

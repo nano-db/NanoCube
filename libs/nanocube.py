@@ -126,10 +126,4 @@ class NanoCube(object):
 
 
     def _shallow_copy(node):
-        if isinstance(node, Node):
-            copied_node = Node()
-        copied_node.set_shared_content(node.get_content())
-        for key in node.content:
-            copied_node.add_proper_child(key)
-        return copied_node
-        else:
+        return node.copy()
