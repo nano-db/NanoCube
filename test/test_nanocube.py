@@ -1,5 +1,6 @@
 from nose.tools import assert_equals, assert_is_instance, assert_not_equals, assert_is_none
 from datetime import datetime
+from copy import copy
 from libs.timeserietable import TimeSerieTable
 from libs.nanocube import NanoCube
 
@@ -132,3 +133,25 @@ class TestNanoCube:
 
         assert_is_none(cube.world.shared_content.shared_content)
         assert_is_instance(cube.world.shared_content.content, TimeSerieTable)
+
+    def test_add_2_sub_elements(self):
+        cube = NanoCube(["Type"], 2)
+        o1 = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Type': 'Android',
+            'Time': datetime(2005, 7, 12, 10, 5, 1)
+        }
+
+        o2 = copy(o1)
+        o2['Type'] = 'Iphone'
+
+        o3 = copy(o1)
+        o3['Type'] = 'Iphone'
+        o3['Longitude'] = -25.721672
+        o3['Latitude'] =  28.232283
+
+        cube.add(o1)
+        cube.add(o2)
+        cube.add(o3)
+

@@ -39,7 +39,7 @@ class NanoCube(object):
                     n.set_proper_content(Node())
                 update = True
             elif n.has_shared_content and n.content not in updated_nodes:
-                content = n.content.copy
+                content = n.content.copy()
                 n.set_proper_content(content)
                 update = True
             elif n.has_proper_content:

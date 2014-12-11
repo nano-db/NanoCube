@@ -1,3 +1,4 @@
+import copy
 from math import floor
 from datetime import timedelta
 
@@ -73,8 +74,8 @@ class TimeSerieTable(object):
         return self.table[end_bin]['sum'] - self.table[begin_bin]['sum']
 
     def copy(self):
-        table_copy = TimeSerieTable()
-        table_copy.bin_size = self.bin_size
-        table_copy.start = self.start
-        table_copy.table = self.table[:]
+        table_copy = copy.copy(self)
+        table_copy.table = []
+        for elem in self.table:
+            table_copy.table.append(copy.copy(elem))
         return table_copy
