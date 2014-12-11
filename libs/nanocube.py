@@ -30,16 +30,17 @@ class NanoCube(object):
             update = False
 
             if n.has_a_single_child:
-                n.set_shared_content(child.get_content)
-            elif n.get_content is None:
+                n.set_shared_content(child.content)
+            elif n.content is None:
                 dim = self.get_dimension()
                 if level == dim:
                     n.set_proper_content(TimeSerieTable())
                 else:
                     n.set_proper_content(Node())
                 update = True
-            elif n.has_shared_content and n.get_content not in updated_nodes:
-                raise Exception("Not implemented")
+            elif n.has_shared_content and n.content not in updated_nodes:
+                content = n.content.copy
+                n.set_proper_content(content)
                 update = True
             elif n.has_proper_content:
                 update = True
@@ -62,7 +63,8 @@ class NanoCube(object):
                 child = Node()
                 n.add_proper_child(key, child)
             elif Node.is_shared_child(n, child):
-                raise Exception("Not implemented")
+                child = child.copy()
+                n.add_proper_child(key, child)
             stack.append(child)
             n = child
         return stack

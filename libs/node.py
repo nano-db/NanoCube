@@ -21,8 +21,8 @@ class Node(object):
 
         :rtype : Node
         """
-        if self.content is not None:
-            return self.content
+        if self.proper_content is not None:
+            return self.proper_content
         else:
             return self.shared_content
 
@@ -58,8 +58,7 @@ class Node(object):
         :param child:Node Child node to test
         :rtype:bool
         """
-        return (node.shared_child is not None
-                and child in node.children.item())
+        return child in node.shared_children.values()
 
     def set_shared_content(self, node):
         """Set a node as shared content
