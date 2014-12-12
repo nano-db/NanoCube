@@ -155,3 +155,36 @@ class TestNanoCube:
         cube.add(o2)
         cube.add(o3)
 
+    def test_schema(self):
+        cube = NanoCube(["Type"], 2)
+        o1 = {
+            'Longitude': -122.394685,
+            'Latitude': 37.803015,
+            'Type': 'Android',
+            'Time': datetime(2005, 7, 12, 10, 5, 1)
+        }
+
+        o2 = copy(o1)
+        o2['Type'] = 'Iphone'
+
+        o3 = copy(o1)
+        o3['Type'] = 'Iphone'
+        o3['Longitude'] = -25.721672
+        o3['Latitude'] =  28.232283
+
+        cube.add(o1)
+        cube.add(o2)
+        cube.add(o3)
+
+        schema = cube.schema()
+        assert_equals(len(schema['dimensions']), 2)
+
+        loc_dim = schema['dimensions'][0]
+        assert_equals(loc_dim['type'], 'quad_tree_2')
+        assert_equals(loc_dim['name'], 'Location')
+
+        devise_dim = schema['dimensions'][1]
+        assert_equals(devise_dim['type'], 'cat_1')
+        assert_equals(devise_dim['name'], 'Type')
+        assert('Iphone' in devise_dim['values'].keys())
+        assert('Android' in devise_dim['values'].keys())

@@ -129,3 +129,22 @@ class NanoCube(object):
 
     def _shallow_copy(node):
         return node.copy()
+
+    def schema(self):
+        ret = dict()
+        dimensions = []
+        location_dim = {
+            'name': 'Location',
+            'type': 'quad_tree_' + str(self.location_granularity),
+            'values': {}
+        }
+        dimensions.append(location_dim)
+        for index, dim_name in enumerate(self.dimensions):
+            dim = {
+                'name': dim_name,
+                'type': 'cat_' + str(index + 1),
+                'values': self.dim_mapping[dim_name]
+            }
+            dimensions.append(dim)
+        ret['dimensions'] = dimensions
+        return ret
