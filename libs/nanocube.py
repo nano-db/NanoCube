@@ -1,3 +1,4 @@
+import sys
 from libs.node import Node
 from libs.timeserietable import TimeSerieTable
 
@@ -148,3 +149,9 @@ class NanoCube(object):
             dimensions.append(dim)
         ret['dimensions'] = dimensions
         return ret
+
+    def __sizeof__(self):
+        size = sys.getsizeof(self.dim_mapping) + sys.getsizeof(self.dimensions)
+        size += sys.getsizeof(self.location_granularity)
+        size += sys.getsizeof(self.world)
+        return size

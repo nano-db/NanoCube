@@ -1,4 +1,5 @@
 import copy
+import sys
 from math import floor
 from datetime import timedelta
 
@@ -107,3 +108,9 @@ class TimeSerieTable(object):
         for elem in self.table:
             table_copy.table.append(copy.copy(elem))
         return table_copy
+
+
+    def __sizeof__(self):
+        size = sys.getsizeof(self.start) + sys.getsizeof(self.bin_size)
+        size += sys.getsizeof(self.table)
+        return size
