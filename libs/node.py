@@ -1,3 +1,5 @@
+import sys
+
 
 class Node(object):
     def __init__(self):
@@ -111,3 +113,10 @@ class Node(object):
         for key in self.children:
             node_copy.add_shared_child(key, self.children[key])
         return node_copy
+
+    def __sizeof__(self):
+        size = sys.getsizeof(self.proper_children)
+        size += sys.getsizeof(self.proper_content)
+        for key in self.shared_children.keys():
+            size += sys.getsizeof(key)
+        return size

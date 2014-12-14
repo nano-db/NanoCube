@@ -1,6 +1,6 @@
 import csv
 import datetime
-
+import sys
 from libs.nanocube import NanoCube
 
 
@@ -16,6 +16,7 @@ def main():
             data['Time'] = datetime.datetime.strptime(row['time'], parser)
             data['Description'] = row['crime']
             cube.add(data)
+    print(sys.getsizeof(cube))
 
 
 if __name__ == '__main__':
