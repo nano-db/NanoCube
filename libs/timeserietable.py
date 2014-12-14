@@ -88,15 +88,30 @@ class TimeSerieTable(object):
         :param end: datetime end of the timeframe
         :return: int
         """
-        begin_bin = self._get_bin_number(begin)
-        if begin_bin < 0:
-            begin_bin = 0
-
-        end_bin = self._get_bin_number(end)
-        if end_bin >= len(self.table):
+        if end is None:
             end_bin = len(self.table) - 1
+        else:
+            end_bin = self._get_bin_number(end)
+            if end_bin < 0:
+                end_bin = 0
+            elif end_bin >= len(self.table):
+                end_bin = len(self.table) - 1
 
-        return self.table[end_bin]['sum'] - self.table[begin_bin]['sum']
+
+        if begin is None:
+            return self.table[end_bin]['sum']
+        else:
+            start_bin = self._get_bin_number(begin)
+            if start_bin < 0:
+                start_bin = 0
+            elif start_bin >= len(self.table):
+                start_bin = len(self.table) - 1
+
+        if start_bin > end_bin:
+            raise Exception("Begin date is after end date")
+        else:
+            return self.table[end_bin]['sum'] - self.table[start_bin]['sum']
+
 
     def copy(self):
         """Return a shallow copy of the instance
