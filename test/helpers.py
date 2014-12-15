@@ -14,7 +14,7 @@ samples = dict(
 
 def mock_cube(name="simple"):
     parser = '%m/%d/%Y %H:%M:%S'
-    cube = NanoCube(samples[name]['schema'], samples[name]['loc_granularity'])
+    cube = NanoCube(samples[name]['schema'], loc_granularity=samples[name]['loc_granularity'])
 
     with open(samples[name]['path']) as sample_file:
         reader = csv.DictReader(sample_file, delimiter=",")

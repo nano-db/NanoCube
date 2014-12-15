@@ -4,17 +4,17 @@ from libs.timeserietable import TimeSerieTable
 
 
 class NanoCube(object):
-    def __init__(self, name, dimensions, loc_granularity=10, bin_size=3600):
+    def __init__(self, dimensions, name="cube", loc_granularity=10, bin_size=3600):
         super(NanoCube, self).__init__()
         self.name = name
+        self.dimensions = dimensions
         self.world = Node()
         self.location_granularity = loc_granularity
         self.bin_size = bin_size
 
         # Init dimensions
-        self.dimensions = dimensions
         self.dim_mapping = dict()
-        for dim in dimensions:
+        for dim in self.dimensions:
             self.dim_mapping[dim] = dict()
 
     def add(self, entry):

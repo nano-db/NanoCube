@@ -9,9 +9,9 @@ class TestNanoCube:
     def create_sample_cube(slef, **kargs):
         dimensions = ["Description", "Type"]
         if 'loc' in kargs:
-            return NanoCube(dimensions, kargs['loc'])
+            return NanoCube(dimensions, loc_granularity=kargs['loc'])
         else:
-            return NanoCube(dimensions, 4)
+            return NanoCube(dimensions, loc_granularity=4)
 
     def test_get_location_key(self):
         cube = self.create_sample_cube()
@@ -156,7 +156,7 @@ class TestNanoCube:
         cube.add(o3)
 
     def test_schema(self):
-        cube = NanoCube(["Type"], 2)
+        cube = NanoCube(["Type"], loc_granularity=2)
         o1 = {
             'Longitude': -122.394685,
             'Latitude': 37.803015,
