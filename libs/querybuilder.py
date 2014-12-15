@@ -1,3 +1,5 @@
+from timeserietable import TimeSerieTable
+
 class QueryBuilder(object):
     def __init__(self, cube, **kwargs):
         super(QueryBuilder, self).__init__()
@@ -36,13 +38,16 @@ class QueryBuilder(object):
 
     def after(self, date):
         self.timeframe[0] = date
+        return self
 
     def before(self, date):
         self.timeframe[1] = date
+        return self
 
     def between(self, begin, end):
         self.after(begin)
         self.before(end)
+        return self
 
     def _retrieve_timeserietable(self, path):
         node = self.cube.world

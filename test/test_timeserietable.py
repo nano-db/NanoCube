@@ -49,10 +49,10 @@ class TestTimeSerieTable(object):
         t.insert(self.mock_time(14, 40, 45))
 
         res = t.query(self.mock_time(13, 30, 50), self.mock_time(14, 30, 50))
-        assert_equals(res, 1)
+        assert_equals(res, 3)
 
         res = t.query(self.mock_time(9, 30, 50), self.mock_time(10, 30, 50))
-        assert_equals(res, 0)
+        assert_equals(res, 2)
 
     def test_copy(self):
         t = TimeSerieTable(3600)
