@@ -7,7 +7,7 @@ from libs.nanocube import NanoCube
 def main():
     parser = '%m/%d/%Y %I:%M:%S %p'
     cube = NanoCube(['Description'], 2)
-    with open('data/phone.csv') as csvfile:
+    with open('data/crime50k.csv') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             data = dict()

@@ -1,0 +1,12 @@
+---
+Name: Crime
+Location granularity: 10
+Dimensions:
+    - name: Type
+      key: crime
+Meta:
+    Time key: time
+    Time format: %m/%d/%Y %I:%M:%S %p
+    Time bin size: 3600
+    Longitude key: Longitude
+    Latitude key: Latitude
