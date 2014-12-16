@@ -28,11 +28,15 @@ class ServerManager(object):
         self.socket.send_json(ret)
 
     def route(self, msg):
-        cmd = msg['cmd']
+        cmd = msg.get('cmd')
+        data = msg.get('data')
+
         if cmd == "ping":
             return self.ping()
         elif cmd == "list":
             return self.list()
+        elif cmd == "info":
+            return self.info(data)
         else:
             return self.not_found()
 
@@ -53,6 +57,15 @@ class ServerManager(object):
             "error": "Command not found"
         }
 
+    def info(self, data):
+        cube_name = data["cube"]
+        if self.cubes.get(cube_name) is None:
+            return {
+                "status": "error",
+                "error": "Cube {0} not found".format(cube_name)
+            }
+        else:
+            return self.cubes[cube_name].informations
 
 def init_parser():
     parser = argparse.ArgumentParser(description="NanocubeBD: Real-time database")

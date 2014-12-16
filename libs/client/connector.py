@@ -6,6 +6,7 @@ class Connector(object):
         socket = context.socket(zmq.REQ)
         socket.connect("tcp://127.0.0.1:{0}".format(port))
         self.socket = socket
+        self.favorite_cube = None
 
     @property
     def is_connected(self):
@@ -43,6 +44,16 @@ class Connector(object):
             return None
         else:
             return ret
+
+    def use_cube(self, cube_name):
+        ret, err = self.send_command("info", {
+            "cube": cube_name
+        })
+        if err:
+            print(err)
+        else:
+            self.favorite_cube = ret
+
 
     def close_connection(self):
         self.socket.close()
