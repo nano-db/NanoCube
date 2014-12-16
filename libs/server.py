@@ -16,7 +16,8 @@ class ServerManager(object):
     def start(self):
         print("NanocubeDB is running on port: {0}".format(self.port))
         try:
-            self.loop()
+            while True:
+                self.loop()
         except KeyboardInterrupt:
             print('Bye')
 
