@@ -10,3 +10,5 @@ Currently support python 2.7 only.
 ```
 pip install requirements.txt
 ```
+
+To start the database `bin/server` and to use the CLI `bin/clien`. Refere to each documentation with the `-h` options for more details.
