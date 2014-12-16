@@ -24,7 +24,7 @@ class CommandParser(Cmd):
             try:
                 self.connector.use_cube(cube_name)
             except Exception, e:
-                print('[Error] ' + e)
+                print('[Error] ' + str(e))
 
     def do_load(self, args):
         args = args.strip().split(" ")
@@ -40,11 +40,11 @@ class CommandParser(Cmd):
             paths.append(os.path.abspath(f))
 
         try:
-            ret = self.connector.load(paths[0], paths[1])
+            ret = self.connector.load_cube(paths[0], paths[1])
         except Exception, e:
-            print('[Error] ' + e)
+            print('[Error] ' + str(e))
         else:
-            print("Loading: {0}".format(ret["name"]))
+            print("Loading: {0}".format(ret["Name"]))
 
     def do_exit(self, args):
         print("Bye!")
