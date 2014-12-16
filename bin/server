@@ -1,16 +1,4 @@
-#!/usr/bin/python
+#!/bin/bash
 
-import argparse
-
-
-def init_parser():
-    parser = argparse.ArgumentParser(description="NanocubeBD: Real-time database")
-    parser.add_argument('--debug', '-d', action='store_true',
-                        help="Start in Debug mode")
-    parser.add_argument('--port', '-p', type=int, default=5000,
-                        help="Interface port")
-    args = parser.parse_args()
-    print(args)
-
-if __name__ == '__main__':
-    init_parser()
+BINPATH=`dirname $0`
+python "$BINPATH/../libs/server.py" $@
