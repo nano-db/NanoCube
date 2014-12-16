@@ -9,10 +9,40 @@ class Connector(object):
 
     @property
     def is_connected(self):
+        payload = {
+            "cmd": "ping"
+        }
         try:
-            self.socket.send("ping")
-            ret = self.socket.recv()
+            self.socket.send_json(payload)
+            ret = self.socket.recv_json()
         except zmq.error.ZMQError:
             return False
         else:
-            return ret == "pong"
+            return ret.get('status') == "OK"
+
+    def send_command(self, cmd_name, data):
+        payload = {
+            "cmd": cmd_name,
+            "data": data
+        }
+        try:
+            self.socket.send_json(payload)
+            ret = self.socket.recv_json()
+        except zmq.error.ZMQError:
+            return "Impossible to connect to NanocubeDB", None
+        else:
+            if ret['status'] == "error":
+                return None, ret['error']
+            else:
+                return ret['data'], None
+
+    def list_cubes(self):
+        ret, err = self.send_command("list", None)
+        if err:
+            print(err)
+            return None
+        else:
+            return ret
+
+    def close_connection(self):
+        self.socket.close()
