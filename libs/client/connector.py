@@ -42,10 +42,13 @@ class Connector(object):
         return self.send_command("list", None)
 
     def use_cube(self, cube_name):
-        ret = self.send_command("info", {
+        cube = self.get_informations(cube_name)
+        self.favorite_cube = cube
+
+    def get_informations(self, cube_name):
+        return self.send_command("info", {
             "cube": cube_name
         })
-        self.favorite_cube = ret
 
     def load_cube(self, input_file, config_file):
         return self.send_command("load", {

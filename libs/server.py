@@ -55,7 +55,7 @@ class ServerManager(object):
     def list(self):
         return {
             "status": "OK",
-            "data": self.cubes.keys()
+            "data": [self.cubes[name].info for name in self.cubes]
         }
 
     def not_found(self):
@@ -72,7 +72,10 @@ class ServerManager(object):
                 "error": "Cube {0} not found".format(cube_name)
             }
         else:
-            return self.cubes[cube_name].info
+            return {
+                "status": "OK",
+                "data": self.cubes[cube_name].info
+            }
 
     def create_nanocube(self, config):
         name = config['Name']
@@ -82,8 +85,8 @@ class ServerManager(object):
             raise Exception("Name {0} is already used".format(name))
 
         cube = NanoCube(
-            name,
             dimensions_name,
+            name=name,
             loc_granularity=config['Location granularity'],
             bin_size=config['Meta']['Time bin size']
         )
@@ -97,12 +100,12 @@ class ServerManager(object):
         time_key = config['Meta']['Time key']
         time_format = config['Meta']['Time format']
 
-        def parsing(cube, data_file):
+        def parsing(cube, input_file):
+            data_file = open(input_file, 'r')
             reader = csv.DictReader(data_file, delimiter=",")
+            cube.is_loading = True
             for row in reader:
                 event = dict()
-                if reader.line_num % 1000 == 0:
-                    print("Imported : {0}".format(reader.line_num))
                 try:
                     event['Longitude'] = float(row[long_key])
                     event['Latitude'] = float(row[lat_key])
@@ -113,6 +116,7 @@ class ServerManager(object):
                 except Exception:
                     pass
 
+            cube.is_loading = False
         return parsing
 
     def load(self, data):
