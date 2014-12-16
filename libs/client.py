@@ -1,30 +1,5 @@
 import argparse
-import zmq
-from cmd import Cmd
-
-
-class CommandParser(Cmd):
-    def __init__(self, args):
-        Cmd.__init__(self)
-
-        context = zmq.Context()
-        socket = context.socket(zmq.REQ)
-        socket.connect("tcp://127.0.0.1:{0}".format(args.port))
-        self.socket = socket
-
-    def do_ping(self, args):
-        print("ping")
-        try:
-            self.socket.send(args)
-            res = self.socket.recv()
-            print(res)
-        except zmq.error.ZMQError:
-            print("Impossible to connect")
-
-    def do_exit(self, args):
-        print("Bye!")
-        exit(0)
-
+from client.commandparser import CommandParser
 
 def init_parser():
     parser = argparse.ArgumentParser(description="NanocubeBD client")

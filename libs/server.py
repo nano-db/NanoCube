@@ -23,6 +23,8 @@ class ServerManager(object):
 
     def loop(self):
         msg = self.socket.recv()
+        if msg == "ping":
+            msg = "pong"
         self.socket.send(msg)
 
 def init_parser():
