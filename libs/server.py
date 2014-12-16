@@ -1,4 +1,6 @@
 import argparse
+import zmq
+
 
 class ServerManager(object):
     def __init__(self, args):
@@ -7,16 +9,20 @@ class ServerManager(object):
         self.port = args.port
         self.cubes = dict()
 
-    def start(self):
-        self.loop()
+        context = zmq.Context()
+        self.socket = context.socket(zmq.REP)
+        self.socket.bind("tcp://127.0.0.1:{0}".format(args.port))
 
-    def loop(self):
+    def start(self):
+        print("NanocubeDB is running on port: {0}".format(self.port))
         try:
-            bob = 0
-            while True:
-                bob += 1
+            self.loop()
         except KeyboardInterrupt:
             print('Bye')
+
+    def loop(self):
+        msg = self.socket.recv()
+        self.socket.send(msg)
 
 def init_parser():
     parser = argparse.ArgumentParser(description="NanocubeBD: Real-time database")
