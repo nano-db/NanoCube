@@ -18,6 +18,26 @@ class CommandParser(Cmd):
         for cube in cubes:
             print(pattern.format(cube['name'], cube['count'], cube['is_loading']))
 
+    def do_info(self, args):
+        name = args.strip()
+        if len(name) > 0 or self.connector.favorite_cube is not None:
+            if self.connector.favorite_cube is not None:
+                cube_name = self.connector.favorite_cube['name']
+            else:
+                cube_name = name
+
+            try:
+                info = self.connector.get_informations(cube_name)
+            except Exception, e:
+                print('[Error] ' + str(e))
+            else:
+                for key in info:
+                    print(key + ": " + str(info[key]))
+        else:
+            print('[Error] No cube specified')
+
+
+
     def do_use(self, cube_name):
         if not cube_name:
             print('[Error] A name should be specified')

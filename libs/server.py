@@ -72,7 +72,10 @@ class ServerManager(object):
                 "error": "Cube {0} not found".format(cube_name)
             }
         else:
-            return self.cubes[cube_name].info
+            return {
+                "status": "OK",
+                "data": self.cubes[cube_name].info
+            }
 
     def create_nanocube(self, config):
         name = config['Name']
