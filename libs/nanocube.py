@@ -11,6 +11,8 @@ class NanoCube(object):
         self.world = Node()
         self.location_granularity = loc_granularity
         self.bin_size = bin_size
+        self.count = 0
+        self.is_loading = False
 
         # Init dimensions
         self.dim_mapping = dict()
@@ -20,15 +22,18 @@ class NanoCube(object):
     @property
     def info(self):
         return {
-            "Name": self.name,
-            "Dimensions": self.dimensions,
-            "Location granulatiry": self.location_granularity,
-            "Bin size": self.bin_size
+            "name": self.name,
+            "dimension": self.dimensions,
+            "location_granularity": self.location_granularity,
+            "bin_size": self.bin_size,
+            "count": self.count,
+            "is_loading": self.is_loading
         }
 
     def add(self, entry):
         updated_nodes = []
         self._add_node(self.world, entry, 1, updated_nodes)
+        self.count += 1
 
     def get_dimension(self):
         return len(self.dimensions) + 1

@@ -14,8 +14,9 @@ class CommandParser(Cmd):
     def do_list(self, args):
         cubes = self.connector.list_cubes()
         print('{0} cubes'.format(len(cubes)))
+        pattern = '- {0}      Size: {1}      Loading: {2}'
         for cube in cubes:
-            print('- {0}'.format(cube))
+            print(pattern.format(cube['name'], cube['count'], cube['is_loading']))
 
     def do_use(self, cube_name):
         if not cube_name:
@@ -44,8 +45,8 @@ class CommandParser(Cmd):
         except Exception, e:
             print('[Error] ' + str(e))
         else:
-            print("Loading: {0}".format(ret["Name"]))
+            print("Loading: {0}".format(ret["name"]))
 
     def do_exit(self, args):
-        print("Bye!")
+        print("Au revoir!")
         exit(0)
