@@ -1,6 +1,6 @@
 import sys
-from libs.node import Node
-from libs.timeserietable import TimeSerieTable
+from node import Node
+from timeserietable import TimeSerieTable
 
 
 class NanoCube(object):
@@ -16,6 +16,15 @@ class NanoCube(object):
         self.dim_mapping = dict()
         for dim in self.dimensions:
             self.dim_mapping[dim] = dict()
+
+    @property
+    def info(self):
+        return {
+            "Name": self.name,
+            "Dimensions": self.dimensions,
+            "Location granulatiry": self.location_granularity,
+            "Bin size": self.bin_size
+        }
 
     def add(self, entry):
         updated_nodes = []

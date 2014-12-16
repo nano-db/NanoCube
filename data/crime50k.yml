@@ -1,6 +1,6 @@
 ---
 Name: "Crime"
-Location granularity: 10
+Location granularity: 2
 Dimensions:
     - Name: "Type"
       Key: "crime"
