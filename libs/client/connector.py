@@ -50,6 +50,11 @@ class Connector(object):
             "cube": cube_name
         })
 
+    def serialize(self, cube_name):
+        return self.send_command("serialize", {
+            "cube": cube_name
+        })
+
     def load_cube(self, input_file, config_file):
         return self.send_command("load", {
             "input": input_file,

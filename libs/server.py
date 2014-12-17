@@ -3,6 +3,7 @@ import zmq
 import yaml
 import datetime
 import csv
+import ujson
 from threading import Thread
 from nanocube import NanoCube
 
@@ -44,6 +45,8 @@ class ServerManager(object):
             return self.info(data)
         elif cmd == "load":
             return self.load(data)
+        elif cmd == "serialize":
+            return self.serialize(data)
         else:
             return self.not_found()
 
@@ -143,6 +146,20 @@ class ServerManager(object):
             "status": "OK",
             "data": info
         }
+
+    def serialize(self, data):
+        cube_name = data.get('cube')
+        if self.cubes.get(cube_name) is None:
+            return {
+                "status": "error",
+                "error": "Cube {0} not found".format(cube_name)
+            }
+        else:
+            self.cubes.get(cube_name)
+            return {
+                "status": "OK",
+                "data": "done"
+            }
 
 
 def init_parser():

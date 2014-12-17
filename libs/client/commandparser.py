@@ -67,6 +67,9 @@ class CommandParser(Cmd):
         else:
             print("Loading: {0}".format(ret["name"]))
 
+    def do_serialize(self, args):
+        self.connector.serialize(args)
+
     def do_exit(self, args):
         print("Au revoir!")
         exit(0)

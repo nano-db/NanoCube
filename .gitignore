@@ -55,3 +55,5 @@ target/
 
 # Pycharm
 .idea
+
+.DS_Store
