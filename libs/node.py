@@ -2,12 +2,17 @@ import sys
 
 
 class Node(object):
-    def __init__(self):
+    def __init__(self, cube):
         super(Node, self).__init__()
         self.proper_children = dict()
         self.shared_children = dict()
         self.proper_content = None
         self.shared_content = None
+        self._id = cube.next_id
+
+    @property
+    def id(self):
+        return self._id
 
     @property
     def children(self):
@@ -103,12 +108,12 @@ class Node(object):
     def add_shared_child(self, key, node):
         self.shared_children[key] = node
 
-    def copy(self):
+    def copy(self, cube):
         """Execute a shallow copy of the node
 
         :rtype:Node
         """
-        node_copy = Node()
+        node_copy = Node(cube)
         node_copy.set_shared_content(self.content)
         for key in self.children:
             node_copy.add_shared_child(key, self.children[key])

@@ -8,7 +8,7 @@ class NanoCube(object):
         super(NanoCube, self).__init__()
         self.name = name
         self.dimensions = dimensions
-        self.world = Node()
+        self._id = 0
         self.location_granularity = loc_granularity
         self.bin_size = bin_size
         self.count = 0
@@ -18,6 +18,13 @@ class NanoCube(object):
         self.dim_mapping = dict()
         for dim in self.dimensions:
             self.dim_mapping[dim] = dict()
+
+        self.world = Node(self)
+
+    @property
+    def next_id(self):
+        self._id += 1
+        return self._id
 
     @property
     def info(self):
@@ -51,12 +58,12 @@ class NanoCube(object):
             elif n.content is None:
                 dim = self.get_dimension()
                 if level == dim:
-                    n.set_proper_content(TimeSerieTable())
+                    n.set_proper_content(TimeSerieTable(self))
                 else:
-                    n.set_proper_content(Node())
+                    n.set_proper_content(Node(self))
                 update = True
             elif n.has_shared_content and n.content not in updated_nodes:
-                content = n.content.copy()
+                content = n.content.copy(self)
                 n.set_proper_content(content)
                 update = True
             elif n.has_proper_content:
@@ -77,10 +84,10 @@ class NanoCube(object):
         for key in keys:
             child = n.get_child(key)
             if child is None:
-                child = Node()
+                child = Node(self)
                 n.add_proper_child(key, child)
             elif Node.is_shared_child(n, child):
-                child = child.copy()
+                child = child.copy(self)
                 n.add_proper_child(key, child)
             stack.append(child)
             n = child

@@ -5,11 +5,12 @@ from datetime import timedelta
 
 
 class TimeSerieTable(object):
-    def __init__(self, bin_size=3600):
+    def __init__(self, cube, bin_size=3600):
         super(TimeSerieTable, self).__init__()
         self.start = None
         self.bin_size = bin_size
         self.table = []
+        self.id = cube.next_id
 
     def insert(self, time):
         """ Insert an event into the table
@@ -145,12 +146,13 @@ class TimeSerieTable(object):
             return self.between(begin, end)
 
 
-    def copy(self):
+    def copy(self, cube):
         """Return a shallow copy of the instance
 
         :return: TimeSerieTable
         """
         table_copy = copy.copy(self)
+        table_copy.id = cube.next_id
         table_copy.table = []
         for elem in self.table:
             table_copy.table.append(copy.copy(elem))
