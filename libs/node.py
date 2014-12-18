@@ -125,3 +125,19 @@ class Node(object):
         for key in self.shared_children.keys():
             size += sys.getsizeof(key)
         return size
+
+    def dump(self):
+        ret = u"{}: ".format(self.id)
+        if len(self.proper_children) > 0:
+            ref = {key: self.proper_children[key].id for key in self.proper_children}
+            ret += u"proper_children: {} ".format(str(ref))
+        if len(self.shared_children) > 0:
+            ref = {key: self.shared_children[key].id for key in self.shared_children}
+            ret += u"shared_children: {} ".format(str(ref))
+
+        if self.has_proper_content:
+            ret += u"proper_content: {} ".format(self.proper_content.id)
+        else:
+            ret += u"shared_content: {} ".format(self.shared_content.id)
+
+        return ret + "\n"

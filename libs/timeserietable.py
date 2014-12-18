@@ -163,3 +163,9 @@ class TimeSerieTable(object):
         size = sys.getsizeof(self.start) + sys.getsizeof(self.bin_size)
         size += sys.getsizeof(self.table)
         return size
+
+    def dump(self):
+        ret = u"{0.id}: start: {0.start} ".format(self)
+        table = [e['sum'] for e in self.table]
+        ret += u"table: {}\n".format(str(table))
+        return ret

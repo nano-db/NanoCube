@@ -3,7 +3,7 @@ import zmq
 import yaml
 import datetime
 import csv
-import ujson
+import serializer as Serializer
 from threading import Thread
 from nanocube import NanoCube
 
@@ -155,7 +155,13 @@ class ServerManager(object):
                 "error": "Cube {0} not found".format(cube_name)
             }
         else:
-            self.cubes.get(cube_name)
+            cube = self.cubes.get(cube_name)
+            ret = Serializer.dump(cube)
+            print("write")
+            text_file = open("Output.txt", "w")
+            text_file.write(ret)
+            text_file.close()
+            print("done")
             return {
                 "status": "OK",
                 "data": "done"
