@@ -160,7 +160,8 @@ class ServerManager(object):
             }
         else:
             cube = self.cubes.get(cube_name)
-            Serializer.dumps(cube, cube_name + '.txt')
+            file_name = "data/{}.nano".format(cube.name)
+            Serializer.dumps(cube, file_name)
             return {
                 "status": "OK",
                 "data": "done"
