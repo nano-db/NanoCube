@@ -102,12 +102,16 @@ class ServerManager(object):
         lat_key = config['Meta']['Latitude key']
         time_key = config['Meta']['Time key']
         time_format = config['Meta']['Time format']
+        limit = config.get('Limit')
 
         def parsing(cube, input_file):
             data_file = open(input_file, 'r')
             reader = csv.DictReader(data_file, delimiter=",")
             cube.is_loading = True
             for row in reader:
+                if limit is not None and cube.count > limit:
+                    break
+
                 event = dict()
                 try:
                     event['Longitude'] = float(row[long_key])
@@ -156,12 +160,7 @@ class ServerManager(object):
             }
         else:
             cube = self.cubes.get(cube_name)
-            ret = Serializer.dump(cube)
-            print("write")
-            text_file = open("Output.txt", "w")
-            text_file.write(ret)
-            text_file.close()
-            print("done")
+            Serializer.dumps(cube, cube_name + '.txt')
             return {
                 "status": "OK",
                 "data": "done"
