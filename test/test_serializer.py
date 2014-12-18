@@ -37,4 +37,13 @@ class TestSerializer:
         eq_(cube.dimensions, ['Devise'])
         eq_(cube.dim_mapping, {'Devise': {'iPhone': 1, 'Android': 2}})
 
+    def test_load_timeserietable(self):
+        txt = self.load_nano_file('nodes')
+        stream = io.StringIO(unicode(txt))
+        last_node = serializer.load_nodes(stream)
+
+        eq_(last_node.id, 1)
+        eq_(last_node.content.id, 2)
+        eq_(len(last_node.proper_children), 1)
+
 

@@ -1,7 +1,7 @@
 import io
 import re
-import json
 from nanocube import NanoCube
+from node import Node
 from timeserietable import TimeSerieTable
 
 
@@ -19,6 +19,7 @@ def dump(cube):
 def load(string):
     stream = io.StringIO(string)
     cube = load_cube(stream)
+    cube.world = load_nodes(stream, cube)
     stream.close()
     return cube
 
@@ -56,6 +57,23 @@ def load_cube(stream):
             dim_mapping[dim][key] = int(val)
     cube.dim_mapping = dim_mapping
     return cube
+
+
+def load_nodes(stream):
+    nodes = dict()
+    last_node = None
+
+    for line in stream.readlines():
+        line = line.encode('utf-8')
+        if "s:" in line:
+            table = TimeSerieTable.load(line)
+            nodes[table.id] = table
+        else:
+            node = Node.load(line, nodes)
+            nodes[node.id] = node
+            last_node = node
+
+    return last_node
 
 
 def dumps(cube, file_name):

@@ -1,16 +1,17 @@
 import copy
 import sys
+import re
 from math import floor
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 class TimeSerieTable(object):
-    def __init__(self, cube, bin_size=3600):
+    def __init__(self, id, bin_size=3600):
         super(TimeSerieTable, self).__init__()
         self.start = None
         self.bin_size = bin_size
         self.table = []
-        self.id = cube.next_id
+        self.id = id
 
     def insert(self, time):
         """ Insert an event into the table
@@ -165,7 +166,15 @@ class TimeSerieTable(object):
         return size
 
     def dump(self):
-        ret = u"{0.id}: start: {0.start} ".format(self)
+        ret = u"{0.id}: s: {0.start} ".format(self)
         table = [e['sum'] for e in self.table]
-        ret += u"table: {}\n".format(str(table))
+        ret += u"t: {}\n".format(str(table))
         return ret
+
+    @classmethod
+    def load(cls, line):
+        m = re.search("(\d+): s: (.+) t: (.+)", line)
+        new_elem = TimeSerieTable(int(m.group(1)))
+        new_elem.start = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M:%S")
+        new_elem.table = eval(m.group(3))
+        return new_elem
