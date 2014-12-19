@@ -10,6 +10,7 @@ def reqs():
 setup(
     name="NanoDB",
     version="0.0.1",
+    license="Apache License 2.0",
     author="Pierre-Marie Dartus",
     author_email="dartus.pierremarie@gmail.com",
     url="https://github.com/pmdartus/NanoCube",
