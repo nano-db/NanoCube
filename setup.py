@@ -19,5 +19,11 @@ setup(
     long_description=os.path.join(os.path.dirname(__file__), "Readme.md"),
     packages=find_packages(exclude=['test']),
     install_requires=reqs(),
+    entry_points={
+        "console_scripts": [
+            "nanodb_server=libs.server:init_parser",
+            "nanodb=libs.cli:init_parser"
+        ]
+    },
     include_package_data=True
 )
