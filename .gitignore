@@ -58,4 +58,5 @@ target/
 
 # Project specific
 *.nano
+!test/samples/*.nano
 .DS_Store
