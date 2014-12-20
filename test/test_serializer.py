@@ -1,8 +1,9 @@
-import io
 import os
+from datetime import datetime
+from nose.tools import eq_
 from helpers import mock_cube
+from libs.querybuilder import QueryBuilder
 import libs.serializer as serializer
-from nose.tools import ok_, eq_
 
 
 class TestSerializer:
@@ -14,36 +15,34 @@ class TestSerializer:
         with open(file_path) as sample_file:
             return sample_file.read()
 
-    def test_dump_header(self):
-        output = io.StringIO()
-        serializer.dump_cube(self.cube, output)
-        ret = output.getvalue()
-        output.close()
-
-        ok_("'cube'" in ret)
-        ok_("['Devise']" in ret)
-        ok_("'Android': '0'" in ret)
-        ok_("'iPhone': '1'" in ret)
-
-    def test_load_header(self):
-        txt = self.load_nano_file('header')
-        stream = io.StringIO(unicode(txt))
-        cube = serializer.load_cube(stream)
-        stream.close()
-
-        eq_(cube.name, "Phone")
-        eq_(cube.location_granularity, 10)
+    def cube_query(self, cube):
+        eq_(cube.name, 'cube')
         eq_(cube.count, 5)
+        eq_(cube.location_granularity, 2)
         eq_(cube.dimensions, ['Devise'])
-        eq_(cube.dim_mapping, {'Devise': {'iPhone': 1, 'Android': 2}})
 
-    def test_load_timeserietable(self):
-        txt = self.load_nano_file('nodes')
-        stream = io.StringIO(unicode(txt))
-        last_node = serializer.load_nodes(stream)
+        count = QueryBuilder(cube).execute()
+        eq_(count, 5)
 
-        eq_(last_node.id, 1)
-        eq_(last_node.content.id, 2)
-        eq_(len(last_node.proper_children), 1)
+        count = QueryBuilder(cube)\
+            .find("Devise", cube.dim_mapping['Devise']['iPhone'])\
+            .execute()
+        eq_(count, 3)
 
+        count = QueryBuilder(cube)\
+            .find("Devise", cube.dim_mapping['Devise']['Android'])\
+            .execute()
+        eq_(count, 2)
 
+        count = QueryBuilder(cube)\
+            .find("Devise", cube.dim_mapping['Devise']['Android'])\
+            .before(datetime(2014, 12, 10, 12, 30)).execute()
+        eq_(count, 1)
+
+    def test_dump_and_load_simple(self):
+        cube = mock_cube()
+        ret = serializer.dumps(cube)
+        loaded_cube = serializer.loads(ret)
+
+        self.cube_query(cube)
+        self.cube_query(loaded_cube)

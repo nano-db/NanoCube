@@ -147,13 +147,13 @@ class TimeSerieTable(object):
             return self.between(begin, end)
 
 
-    def copy(self, cube):
+    def copy(self, id):
         """Return a shallow copy of the instance
 
         :return: TimeSerieTable
         """
         table_copy = copy.copy(self)
-        table_copy.id = cube.next_id
+        table_copy.id = id
         table_copy.table = []
         for elem in self.table:
             table_copy.table.append(copy.copy(elem))
@@ -176,5 +176,11 @@ class TimeSerieTable(object):
         m = re.search("(\d+): s: (.+) t: (.+)", line)
         new_elem = TimeSerieTable(int(m.group(1)))
         new_elem.start = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M:%S")
-        new_elem.table = eval(m.group(3))
+        table = eval(m.group(3))
+        new_elem.table.append({"sum": table[0], "count": table[0]})
+        for i in range(1, len(table)):
+            new_elem.table.append({
+                "sum": table[i],
+                "count": table[i] - table[i - 1]
+            })
         return new_elem

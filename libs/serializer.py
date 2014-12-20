@@ -5,26 +5,50 @@ from node import Node
 from timeserietable import TimeSerieTable
 
 
-def dump(cube):
-    output = io.StringIO()
-
-    dump_cube(cube, output)
-    dump_nodes(cube.world, output)
-    res = output.getvalue()
-
-    output.close()
+def dumps(cube):
+    '''Serialize a cube and return the string'''
+    stream = io.StringIO()
+    _dumper(cube, stream)
+    res = stream.getvalue()
+    stream.close()
     return res
 
 
-def load(string):
+def dump(cube, file_name):
+    '''Serialize a cube and write it to the passed file'''
+    stream = io.open(file_name, mode="w")
+    _dumper(cube, stream)
+    stream.close()
+
+
+def _dumper(cube, stream):
+    _dump_cube(cube, stream)
+    _dump_nodes(cube.world, stream)
+
+
+def loads(string):
+    '''Unserialize a cube from the passed string and return it'''
     stream = io.StringIO(string)
-    cube = load_cube(stream)
-    cube.world = load_nodes(stream, cube)
+    cube = _loader(stream)
     stream.close()
     return cube
 
 
-def load_cube(stream):
+def load(file_name):
+    '''Unserialize a cube stored in a file and return it'''
+    stream = io.open(file_name)
+    cube = _loader(stream)
+    stream.close()
+    return cube
+
+
+def _loader(stream):
+    cube = _load_cube(stream)
+    cube.world = _load_nodes(stream)
+    return cube
+
+
+def _load_cube(stream):
     name = None
     dim = None
     count = 0
@@ -51,15 +75,11 @@ def load_cube(stream):
     cube = NanoCube(dim, name=name, loc_granularity=gran)
     cube.count = count
 
-    for dim in dim_mapping:
-        for key in dim_mapping[dim]:
-            val = dim_mapping[dim][key]
-            dim_mapping[dim][key] = int(val)
     cube.dim_mapping = dim_mapping
     return cube
 
 
-def load_nodes(stream):
+def _load_nodes(stream):
     nodes = dict()
     last_node = None
 
@@ -76,26 +96,19 @@ def load_nodes(stream):
     return last_node
 
 
-def dumps(cube, file_name):
-    output = io.open(file_name, mode="w")
-    dump_cube(cube, output)
-    dump_nodes(cube.world, output)
-    output.close()
-
-
-def dump_cube(cube, stream):
+def _dump_cube(cube, stream):
     res = u"name: '{0.name}'\ncount: {0.count}\ngran: {0.location_granularity}\n".format(cube)
     res += u"dimensions: {}\n".format(str(cube.dimensions))
     res += u"mapping: {}\n".format(str(cube.dim_mapping))
     stream.write(res)
 
 
-def dump_nodes(node, stream):
+def _dump_nodes(node, stream):
     if not isinstance(node, TimeSerieTable):
         for key in node.proper_children:
-            dump_nodes(node.proper_children[key], stream)
+            _dump_nodes(node.proper_children[key], stream)
 
         if node.has_proper_content:
-            dump_nodes(node.proper_content, stream)
+            _dump_nodes(node.proper_content, stream)
 
     return stream.write(node.dump())

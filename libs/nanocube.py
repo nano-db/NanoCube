@@ -19,7 +19,7 @@ class NanoCube(object):
         for dim in self.dimensions:
             self.dim_mapping[dim] = dict()
 
-        self.world = Node(self)
+        self.world = Node(0)
 
     @property
     def next_id(self):
@@ -58,12 +58,12 @@ class NanoCube(object):
             elif n.content is None:
                 dim = self.get_dimension()
                 if level == dim:
-                    n.set_proper_content(TimeSerieTable(self))
+                    n.set_proper_content(TimeSerieTable(self.next_id))
                 else:
-                    n.set_proper_content(Node(self))
+                    n.set_proper_content(Node(self.next_id))
                 update = True
             elif n.has_shared_content and n.content not in updated_nodes:
-                content = n.content.copy(self)
+                content = n.content.copy(self.next_id)
                 n.set_proper_content(content)
                 update = True
             elif n.has_proper_content:
@@ -84,10 +84,10 @@ class NanoCube(object):
         for key in keys:
             child = n.get_child(key)
             if child is None:
-                child = Node(self)
+                child = Node(self.next_id)
                 n.add_proper_child(key, child)
             elif Node.is_shared_child(n, child):
-                child = child.copy(self)
+                child = child.copy(self.next_id)
                 n.add_proper_child(key, child)
             stack.append(child)
             n = child
