@@ -2,17 +2,33 @@ import os
 from cmd import Cmd
 from connector import Connector
 
+
 class CommandParser(Cmd):
     def __init__(self, args):
         Cmd.__init__(self)
         self.connector = Connector(args.port)
+        self.cache = None
 
         if not self.connector.is_connected:
             print("Impossible to connect to server on port: {0}".format(args.port))
             exit(1)
+        else:
+            self._update_cache()
 
-    def do_list(self, args):
+    def _update_cache(self):
+        self.cache = self.connector.list_cubes()
+
+    def _cube_start_with(self, text):
+        res = []
+        for cube in self.cache:
+            name = cube['name']
+            if len(text) == 0 or name.startswith(text):
+                res.append(cube['name'])
+        return res
+
+    def do_list(self, _):
         cubes = self.connector.list_cubes()
+        self.cache = cubes
         print('{0} cubes'.format(len(cubes)))
         pattern = '- {0}      Size: {1}      Loading: {2}'
         for cube in cubes:
@@ -20,32 +36,16 @@ class CommandParser(Cmd):
 
     def do_info(self, args):
         name = args.strip()
-        if len(name) > 0 or self.connector.favorite_cube is not None:
-            if self.connector.favorite_cube is not None:
-                cube_name = self.connector.favorite_cube['name']
-            else:
-                cube_name = name
-
-            try:
-                info = self.connector.get_informations(cube_name)
-            except Exception, e:
-                print('[Error] ' + str(e))
-            else:
-                for key in info:
-                    print(key + ": " + str(info[key]))
+        try:
+            info = self.connector.get_information(name)
+        except Exception, e:
+            print('[Error] ' + str(e))
         else:
-            print('[Error] No cube specified')
+            for key in info:
+                print(key + ": " + str(info[key]))
 
-
-
-    def do_use(self, cube_name):
-        if not cube_name:
-            print('[Error] A name should be specified')
-        else:
-            try:
-                self.connector.use_cube(cube_name)
-            except Exception, e:
-                print('[Error] ' + str(e))
+    def complete_info(self, text, line, start_index, end_index):
+        return self._cube_start_with(text)
 
     def do_load(self, args):
         args = args.strip().split(" ")
@@ -70,6 +70,9 @@ class CommandParser(Cmd):
     def do_serialize(self, args):
         self.connector.serialize(args)
 
-    def do_exit(self, args):
+    def complete_serialize(self, text, line, start_index, end_index):
+        return self._cube_start_with(text)
+
+    def do_exit(self, _):
         print("Au revoir!")
         exit(0)

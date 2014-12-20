@@ -1,5 +1,6 @@
 import zmq
 
+
 class Connector(object):
     def __init__(self, port):
         context = zmq.Context()
@@ -7,7 +8,6 @@ class Connector(object):
         socket.setsockopt(zmq.LINGER, 0)
         socket.connect("tcp://127.0.0.1:{0}".format(port))
         self.socket = socket
-        self.favorite_cube = None
 
     def send_command(self, cmd_name, data):
         payload = {
@@ -41,11 +41,7 @@ class Connector(object):
     def list_cubes(self):
         return self.send_command("list", None)
 
-    def use_cube(self, cube_name):
-        cube = self.get_informations(cube_name)
-        self.favorite_cube = cube
-
-    def get_informations(self, cube_name):
+    def get_information(self, cube_name):
         return self.send_command("info", {
             "cube": cube_name
         })
