@@ -3,7 +3,7 @@ from datetime import datetime
 from nose.tools import ok_, eq_
 
 from helpers import mock_cube
-from server.querybuilder import QueryBuilder
+from libs.server.querybuilder import QueryBuilder
 
 
 class TestQueryBuilder:
