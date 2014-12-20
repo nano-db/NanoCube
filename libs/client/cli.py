@@ -1,5 +1,5 @@
 import argparse
-from client.commandparser import CommandParser
+from libs.client.commandparser import CommandParser
 
 def init_parser():
     parser = argparse.ArgumentParser(description="NanocubeBD client")

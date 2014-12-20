@@ -1,6 +1,7 @@
 import os
 from cmd import Cmd
-from connector import Connector
+
+from libs.shared.connector import Connector
 
 
 class CommandParser(Cmd):
