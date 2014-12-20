@@ -25,7 +25,7 @@ setup(
     install_requires=reqs(),
     entry_points={
         "console_scripts": [
-            "nanodb_server=libs.server:init_parser",
+            "nanodb_server=libs.server.server:init_parser",
             "nanodb=libs.client.cli:init_parser"
         ]
     },
