@@ -8,18 +8,19 @@ def reqs():
     return [str(ir.req) for ir in install_reqs]
 
 def readme():
-    with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+    with open('README.md') as readme:
         return readme.read()
+
 
 setup(
     name="nanodb",
-    version="0.1.1",
+    version="0.2.6",
     license="Apache License 2.0",
     author="Pierre-Marie Dartus",
     author_email="dartus.pierremarie@gmail.com",
     url="https://github.com/pmdartus/NanoCube",
     description="In memory database for geolocated and temporal data",
-    download_url="https://github.com/pmdartus/NanoCube/archive/v0.2.1.tar.gz",
+    download_url="https://github.com/pmdartus/NanoCube/tarball/v0.2.1",
     long_description=readme(),
     packages=find_packages(exclude=['test']),
     install_requires=reqs(),
