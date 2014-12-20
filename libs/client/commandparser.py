@@ -73,8 +73,16 @@ class CommandParser(Cmd):
         except Exception, e:
             print('[Error] ' + str(e))
 
-
     def complete_serialize(self, text, line, start_index, end_index):
+        return self._cube_start_with(text)
+
+    def do_drop(self, args):
+        try:
+            self.connector.drop(args)
+        except Exception, e:
+            print('[Error] ' + str(e))
+
+    def complete_drop(self, text, line, start_index, end_index):
         return self._cube_start_with(text)
 
     def do_exit(self, _):

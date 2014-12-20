@@ -1,5 +1,6 @@
 import argparse
 import logging
+from libs.server.serializer import dump
 from libs.server.loader import create_nanocube, load_data_in_cube
 from libs.server.interface import Interface
 
@@ -69,6 +70,27 @@ class ServerManager(Interface):
         else:
             return self._send_success(cube.info)
 
+    def do_serialize(self, data):
+        cube_name = data.get('cube')
+        if self.cubes.get(cube_name) is None:
+            error = "Cube '{}' not found".format(cube_name)
+            return self._send_error(error)
+        else:
+            cube = self.cubes.get(cube_name)
+            file_name = "data/{}.nano".format(cube.name)
+            dump(cube, file_name)
+            return self._send_success({
+                'file': file_name
+            })
+
+    def do_drop(self, data):
+        cube_name = data.get('cube')
+        if self.cubes.get(cube_name) is None:
+            error = "Cube '{}' not found".format(cube_name)
+            return self._send_error(error)
+        else:
+            del self.cubes[cube_name]
+            return self._send_success("Dropped")
 
 if __name__ == '__main__':
     init_parser()

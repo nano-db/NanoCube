@@ -57,5 +57,10 @@ class Connector(object):
             "config": config_file
         })
 
+    def drop(self, cube_name):
+        return self.send_command("drop", {
+            "cube": cube_name
+        })
+
     def close_connection(self):
         self.socket.close()
