@@ -29,7 +29,6 @@ class CommandParser(Cmd):
     def do_list(self, _):
         cubes = self.connector.list_cubes()
         self.cache = cubes
-        print('{0} cubes'.format(len(cubes)))
         pattern = '- {0}      Size: {1}      Loading: {2}'
         for cube in cubes:
             print(pattern.format(cube['name'], cube['count'], cube['is_loading']))
@@ -68,7 +67,11 @@ class CommandParser(Cmd):
             print("Loading: {0}".format(ret["name"]))
 
     def do_serialize(self, args):
-        self.connector.serialize(args)
+        try:
+            self.connector.serialize(args)
+        except Exception, e:
+            print('[Error] ' + str(e))
+
 
     def complete_serialize(self, text, line, start_index, end_index):
         return self._cube_start_with(text)
