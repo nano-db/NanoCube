@@ -2,7 +2,7 @@ from datetime import datetime
 from nose.tools import assert_equals
 from libs.timeserietable import TimeSerieTable
 
-
+'''
 class TestTimeSerieTable(object):
     def mock_time(self, hour, min, sec):
         return datetime(2005, 7, 12, hour, min, sec)
@@ -59,3 +59,4 @@ class TestTimeSerieTable(object):
         t.insert(self.mock_time(12, 30, 00))
         copy_t = t.copy()
         assert_equals(len(t.table), len(copy_t.table))
+'''

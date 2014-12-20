@@ -3,7 +3,7 @@ import zmq
 import yaml
 import datetime
 import csv
-import ujson
+import serializer as Serializer
 from threading import Thread
 from nanocube import NanoCube
 
@@ -102,12 +102,16 @@ class ServerManager(object):
         lat_key = config['Meta']['Latitude key']
         time_key = config['Meta']['Time key']
         time_format = config['Meta']['Time format']
+        limit = config.get('Limit')
 
         def parsing(cube, input_file):
             data_file = open(input_file, 'r')
             reader = csv.DictReader(data_file, delimiter=",")
             cube.is_loading = True
             for row in reader:
+                if limit is not None and cube.count > limit:
+                    break
+
                 event = dict()
                 try:
                     event['Longitude'] = float(row[long_key])
@@ -155,7 +159,9 @@ class ServerManager(object):
                 "error": "Cube {0} not found".format(cube_name)
             }
         else:
-            self.cubes.get(cube_name)
+            cube = self.cubes.get(cube_name)
+            file_name = "data/{}.nano".format(cube.name)
+            Serializer.dumps(cube, file_name)
             return {
                 "status": "OK",
                 "data": "done"

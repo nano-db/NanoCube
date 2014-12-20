@@ -56,4 +56,7 @@ target/
 # Pycharm
 .idea
 
+# Project specific
+*.nano
+!test/samples/*.nano
 .DS_Store
