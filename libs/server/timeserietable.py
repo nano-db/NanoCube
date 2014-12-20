@@ -1,6 +1,5 @@
 import copy
 import sys
-import re
 from math import floor
 from datetime import timedelta, datetime
 
@@ -166,21 +165,24 @@ class TimeSerieTable(object):
         return size
 
     def dump(self):
-        ret = u"{0.id}: s: {0.start} ".format(self)
-        table = [e['sum'] for e in self.table]
-        ret += u"t: {}\n".format(str(table))
+        ret = u"t|{0.id}|{0.start}|".format(self)
+        formatted_array = ""
+        for i, e in enumerate(self.table):
+            formatted_array += str(e['sum'])
+            if i < len(self.table) - 1:
+                formatted_array += ","
+        ret += u"{}\n".format(formatted_array)
         return ret
 
     @classmethod
     def load(cls, line):
-        m = re.search("(\d+): s: (.+) t: (.+)", line)
-        new_elem = TimeSerieTable(int(m.group(1)))
-        new_elem.start = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M:%S")
-        table = eval(m.group(3))
-        new_elem.table.append({"sum": table[0], "count": table[0]})
-        for i in range(1, len(table)):
+        new_elem = TimeSerieTable(int(line[0]))
+        new_elem.start = datetime.strptime(line[1], "%Y-%m-%d %H:%M:%S")
+        formatted_table = line[2].split(',')
+        new_elem.table.append({"sum": int(formatted_table[0]), "count": int(formatted_table[0])})
+        for i in range(1, len(formatted_table)):
             new_elem.table.append({
-                "sum": table[i],
-                "count": table[i] - table[i - 1]
+                "sum": int(formatted_table[i]),
+                "count": int(formatted_table[i]) - new_elem.table[i - 1]['sum']
             })
         return new_elem

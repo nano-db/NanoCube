@@ -83,11 +83,12 @@ def _load_nodes(stream):
 
     for line in stream.readlines():
         line = line.encode('utf-8')
-        if "s:" in line:
-            table = TimeSerieTable.load(line)
+        obj = line.rstrip().split('|')
+        if obj[0] == 't':
+            table = TimeSerieTable.load(obj[1:])
             nodes[table.id] = table
         else:
-            node = Node.load(line, nodes)
+            node = Node.load(obj[1:], nodes)
             nodes[node.id] = node
             last_node = node
 
