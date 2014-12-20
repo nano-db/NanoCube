@@ -1,13 +1,15 @@
 import sys
+import re
 
 
 class Node(object):
-    def __init__(self):
+    def __init__(self, id):
         super(Node, self).__init__()
         self.proper_children = dict()
         self.shared_children = dict()
         self.proper_content = None
         self.shared_content = None
+        self.id = id
 
     @property
     def children(self):
@@ -103,12 +105,12 @@ class Node(object):
     def add_shared_child(self, key, node):
         self.shared_children[key] = node
 
-    def copy(self):
+    def copy(self, cube):
         """Execute a shallow copy of the node
 
         :rtype:Node
         """
-        node_copy = Node()
+        node_copy = Node(cube)
         node_copy.set_shared_content(self.content)
         for key in self.children:
             node_copy.add_shared_child(key, self.children[key])
@@ -120,3 +122,45 @@ class Node(object):
         for key in self.shared_children.keys():
             size += sys.getsizeof(key)
         return size
+
+    def dump(self):
+        ret = u"{}: ".format(self.id)
+        if len(self.proper_children) > 0:
+            ref = {key: self.proper_children[key].id for key in self.proper_children}
+            ret += u"pch: {} ".format(str(ref))
+        if len(self.shared_children) > 0:
+            ref = {key: self.shared_children[key].id for key in self.shared_children}
+            ret += u"sch: {} ".format(str(ref))
+
+        if self.has_proper_content:
+            ret += u"pco: {} ".format(self.proper_content.id)
+        else:
+            ret += u"sco: {} ".format(self.shared_content.id)
+
+        return ret + "\n"
+
+    @classmethod
+    def load(cls, line, nodes):
+        pattern = "(\d+): (?:pch: ([^p|s]+))?(?:sch: ([^p|s]+))?(?:(?:pco: (.+))|(?:sco: (.+)))"
+        m = re.search(pattern, line)
+
+        id = int(m.group(1))
+        node = Node(id)
+
+        if m.group(2) is not None:
+            node.proper_children = eval(m.group(2))
+            for key in node.proper_children:
+                val = node.proper_children[key]
+                node.proper_children[key] = nodes[val]
+        if m.group(3) is not None:
+            node.shared_children = eval(m.group(3))
+            for key in node.shared_children:
+                val = node.shared_children[key]
+                node.shared_children[key] = nodes[val]
+
+        if m.group(4) is not None:
+            node.proper_content = nodes[int(m.group(4))]
+        else:
+            node.shared_content= nodes[int(m.group(5))]
+
+        return node

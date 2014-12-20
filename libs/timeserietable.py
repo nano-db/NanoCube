@@ -1,15 +1,17 @@
 import copy
 import sys
+import re
 from math import floor
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 class TimeSerieTable(object):
-    def __init__(self, bin_size=3600):
+    def __init__(self, id, bin_size=3600):
         super(TimeSerieTable, self).__init__()
         self.start = None
         self.bin_size = bin_size
         self.table = []
+        self.id = id
 
     def insert(self, time):
         """ Insert an event into the table
@@ -145,12 +147,13 @@ class TimeSerieTable(object):
             return self.between(begin, end)
 
 
-    def copy(self):
+    def copy(self, id):
         """Return a shallow copy of the instance
 
         :return: TimeSerieTable
         """
         table_copy = copy.copy(self)
+        table_copy.id = id
         table_copy.table = []
         for elem in self.table:
             table_copy.table.append(copy.copy(elem))
@@ -161,3 +164,23 @@ class TimeSerieTable(object):
         size = sys.getsizeof(self.start) + sys.getsizeof(self.bin_size)
         size += sys.getsizeof(self.table)
         return size
+
+    def dump(self):
+        ret = u"{0.id}: s: {0.start} ".format(self)
+        table = [e['sum'] for e in self.table]
+        ret += u"t: {}\n".format(str(table))
+        return ret
+
+    @classmethod
+    def load(cls, line):
+        m = re.search("(\d+): s: (.+) t: (.+)", line)
+        new_elem = TimeSerieTable(int(m.group(1)))
+        new_elem.start = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M:%S")
+        table = eval(m.group(3))
+        new_elem.table.append({"sum": table[0], "count": table[0]})
+        for i in range(1, len(table)):
+            new_elem.table.append({
+                "sum": table[i],
+                "count": table[i] - table[i - 1]
+            })
+        return new_elem
