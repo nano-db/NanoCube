@@ -1,6 +1,7 @@
 import os
 from cmd import Cmd
-from connector import Connector
+
+from libs.shared.connector import Connector
 
 
 class CommandParser(Cmd):
@@ -29,7 +30,6 @@ class CommandParser(Cmd):
     def do_list(self, _):
         cubes = self.connector.list_cubes()
         self.cache = cubes
-        print('{0} cubes'.format(len(cubes)))
         pattern = '- {0}      Size: {1}      Loading: {2}'
         for cube in cubes:
             print(pattern.format(cube['name'], cube['count'], cube['is_loading']))
@@ -49,7 +49,7 @@ class CommandParser(Cmd):
 
     def do_load(self, args):
         args = args.strip().split(" ")
-        if len(args) != 2:
+        if len(args) > 2 or len(args) == 0:
             print('[Error] An input file and a configuration file are needed')
             return
 
@@ -61,16 +61,30 @@ class CommandParser(Cmd):
             paths.append(os.path.abspath(f))
 
         try:
-            ret = self.connector.load_cube(paths[0], paths[1])
+            if len(paths) == 1:
+                self.connector.load_cube(paths[0])
+            else:
+                ret = self.connector.create_cube(paths[0], paths[1])
+                print("Loading: {0}".format(ret["name"]))
         except Exception, e:
             print('[Error] ' + str(e))
-        else:
-            print("Loading: {0}".format(ret["name"]))
 
     def do_serialize(self, args):
-        self.connector.serialize(args)
+        try:
+            self.connector.serialize(args)
+        except Exception, e:
+            print('[Error] ' + str(e))
 
     def complete_serialize(self, text, line, start_index, end_index):
+        return self._cube_start_with(text)
+
+    def do_drop(self, args):
+        try:
+            self.connector.drop(args)
+        except Exception, e:
+            print('[Error] ' + str(e))
+
+    def complete_drop(self, text, line, start_index, end_index):
         return self._cube_start_with(text)
 
     def do_exit(self, _):

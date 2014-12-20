@@ -1,5 +1,0 @@
-name: 'Phone'
-count: 5
-gran: 10
-dimensions: ['Devise']
-mapping: {'Devise': {'iPhone': '1', 'Android': '2'}}

@@ -1,5 +1,3 @@
-from timeserietable import TimeSerieTable
-
 class QueryBuilder(object):
     def __init__(self, cube, **kwargs):
         super(QueryBuilder, self).__init__()

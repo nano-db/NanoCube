@@ -26,7 +26,7 @@ setup(
     entry_points={
         "console_scripts": [
             "nanodb_server=libs.server:init_parser",
-            "nanodb=libs.cli:init_parser"
+            "nanodb=libs.client.cli:init_parser"
         ]
     },
     include_package_data=True,

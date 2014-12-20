@@ -1,7 +1,9 @@
 import csv
 import datetime
 import os
-from libs.nanocube import NanoCube
+
+from libs.server.nanocube import NanoCube
+
 
 samples = dict(
     simple=dict(

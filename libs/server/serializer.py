@@ -1,8 +1,9 @@
 import io
 import re
-from nanocube import NanoCube
-from node import Node
-from timeserietable import TimeSerieTable
+
+from libs.server.nanocube import NanoCube
+from libs.server.node import Node
+from libs.server.timeserietable import TimeSerieTable
 
 
 def dumps(cube):
@@ -104,6 +105,7 @@ def _dump_cube(cube, stream):
 
 
 def _dump_nodes(node, stream):
+
     if not isinstance(node, TimeSerieTable):
         for key in node.proper_children:
             _dump_nodes(node.proper_children[key], stream)
