@@ -19,7 +19,7 @@ setup(
     author_email="dartus.pierremarie@gmail.com",
     url="https://github.com/pmdartus/NanoCube",
     description="In memory database for geolocated and temporal data",
-    download_url="https://github.com/pmdartus/NanoCube/tarball/0.1.1",
+    download_url="https://github.com/pmdartus/NanoCube/archive/v0.2.1.tar.gz",
     long_description=readme(),
     packages=find_packages(exclude=['test']),
     install_requires=reqs(),
