@@ -1,9 +1,11 @@
 import yaml
 import csv
 import logging
+import re
 from threading import Thread
 from datetime import datetime
 from libs.server.nanocube import NanoCube
+from libs.server.serializer import load as nano_load
 
 
 def create_nanocube(config_path):
@@ -30,6 +32,30 @@ def load_data_in_cube(cube, parsing_func, data_path):
     t.start()
 
 
+def load_from_nano_file(nano_file, cube_store):
+    with open(nano_file) as f:
+        cube_name = f.readline()
+        name = re.search("name: '(.+)'\n", cube_name).group(1)
+
+    t = Thread(target=_run_load_nano_file, args=(nano_file, name, cube_store))
+    t.daemon = True
+    t.start()
+
+    return name
+
+
+def _run_load_nano_file(nano_file, cube_name, cube_store):
+    logger = logging.getLogger("nanoDB.loader." + cube_name)
+    logger.info("Loading " + cube_name)
+    try:
+        cube = nano_load(nano_file)
+        cube_store[cube.name] = cube
+    except Exception, e:
+        logger.error(e)
+    else:
+        logger.info("Cube {} loaded successfully!".format(cube_name))
+
+
 def _generate_parsing_method(config):
     long_key = config['Meta']['Longitude key']
     lat_key = config['Meta']['Latitude key']
@@ -42,10 +68,14 @@ def _generate_parsing_method(config):
 
         data_file = open(input_file, 'r')
         reader = csv.DictReader(data_file, delimiter=",")
+        logger.info("Creating " + cube.name)
         cube.is_loading = True
         for row in reader:
             if limit is not None and cube.count > limit:
                 break
+
+            if cube.count % 10000 == 0:
+                logger.debug("Already loaded: {}".format(cube.count))
 
             event = dict()
             try:
@@ -58,5 +88,6 @@ def _generate_parsing_method(config):
             except Exception, e:
                 logger.debug(e)
 
+        logger.info("Cube {} loaded successfully!".format(cube.name))
         cube.is_loading = False
     return parsing

@@ -49,7 +49,7 @@ class CommandParser(Cmd):
 
     def do_load(self, args):
         args = args.strip().split(" ")
-        if len(args) != 2:
+        if len(args) > 2 or len(args) == 0:
             print('[Error] An input file and a configuration file are needed')
             return
 
@@ -61,11 +61,13 @@ class CommandParser(Cmd):
             paths.append(os.path.abspath(f))
 
         try:
-            ret = self.connector.load_cube(paths[0], paths[1])
+            if len(paths) == 1:
+                self.connector.load_cube(paths[0])
+            else:
+                ret = self.connector.create_cube(paths[0], paths[1])
+                print("Loading: {0}".format(ret["name"]))
         except Exception, e:
             print('[Error] ' + str(e))
-        else:
-            print("Loading: {0}".format(ret["name"]))
 
     def do_serialize(self, args):
         try:

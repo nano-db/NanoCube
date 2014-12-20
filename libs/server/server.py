@@ -1,7 +1,7 @@
 import argparse
 import logging
 from libs.server.serializer import dump
-from libs.server.loader import create_nanocube, load_data_in_cube
+from libs.server.loader import create_nanocube, load_data_in_cube, load_from_nano_file
 from libs.server.interface import Interface
 
 
@@ -54,7 +54,7 @@ class ServerManager(Interface):
         else:
             return self._send_success(self.cubes[cube_name].info)
 
-    def do_load(self, data):
+    def do_create(self, data):
         config_path = data.get('config')
         input_path = data.get('input')
 
@@ -69,6 +69,15 @@ class ServerManager(Interface):
             return self._send_error(e)
         else:
             return self._send_success(cube.info)
+
+    def do_load(self, data):
+        nano_path = data.get('file')
+        try:
+            cube_name = load_from_nano_file(nano_path, self.cubes)
+            return self._send_success({"cube": cube_name})
+        except Exception, e:
+            self.logger.error(e)
+            return self._send_error(e)
 
     def do_serialize(self, data):
         cube_name = data.get('cube')

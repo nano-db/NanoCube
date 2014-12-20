@@ -51,10 +51,15 @@ class Connector(object):
             "cube": cube_name
         })
 
-    def load_cube(self, input_file, config_file):
-        return self.send_command("load", {
+    def create_cube(self, input_file, config_file):
+        return self.send_command("create", {
             "input": input_file,
             "config": config_file
+        })
+
+    def load_cube(self, nano_file):
+        return self.send_command("load", {
+            "file": nano_file
         })
 
     def drop(self, cube_name):
