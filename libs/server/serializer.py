@@ -58,20 +58,17 @@ def _load_cube(stream):
 
     for i in range(5):
         line = stream.readline().encode('utf-8')
+        line = line.rstrip()
         if i == 0:
-            name = re.search("name: '(.+)'\n", line).group(1)
+            name = line
         elif i == 1:
-            count = re.search("count: (\d+)\n", line).group(1)
-            count = int(count)
+            count = int(line)
         elif i == 2:
-            gran = re.search("gran: (\d+)\n", line).group(1)
-            gran = int(gran)
+            gran = int(line)
         elif i == 3:
-            dim = re.search("dimensions: (.+)\n", line).group(1)
-            dim = eval(dim)
+            dim = eval(line)
         elif i == 4:
-            dim_mapping = re.search("mapping: (.+)\n", line).group(1)
-            dim_mapping = eval(dim_mapping)
+            dim_mapping = eval(line)
 
     cube = NanoCube(dim, name=name, loc_granularity=gran)
     cube.count = count
@@ -98,9 +95,9 @@ def _load_nodes(stream):
 
 
 def _dump_cube(cube, stream):
-    res = u"name: '{0.name}'\ncount: {0.count}\ngran: {0.location_granularity}\n".format(cube)
-    res += u"dimensions: {}\n".format(str(cube.dimensions))
-    res += u"mapping: {}\n".format(str(cube.dim_mapping))
+    res = u"{0.name}\n{0.count}\n{0.location_granularity}\n".format(cube)
+    res += u"{}\n".format(str(cube.dimensions))
+    res += u"{}\n".format(str(cube.dim_mapping))
     stream.write(res)
 
 
