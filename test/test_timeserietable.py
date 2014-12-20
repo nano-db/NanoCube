@@ -1,7 +1,3 @@
-from datetime import datetime
-from nose.tools import assert_equals
-from libs.timeserietable import TimeSerieTable
-
 '''
 class TestTimeSerieTable(object):
     def mock_time(self, hour, min, sec):

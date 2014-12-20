@@ -1,9 +1,11 @@
 import os
 from datetime import datetime
+
 from nose.tools import eq_
+
 from helpers import mock_cube
-from libs.querybuilder import QueryBuilder
-import libs.serializer as serializer
+from libs.server.querybuilder import QueryBuilder
+import libs.server.serializer as serializer
 
 
 class TestSerializer:

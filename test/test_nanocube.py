@@ -1,8 +1,10 @@
-from nose.tools import assert_equals, assert_is_instance, assert_not_equals, assert_is_none
 from datetime import datetime
 from copy import copy
-from libs.timeserietable import TimeSerieTable
-from libs.nanocube import NanoCube
+
+from nose.tools import assert_equals, assert_is_instance, assert_is_none
+
+from libs.server.timeserietable import TimeSerieTable
+from libs.server.nanocube import NanoCube
 
 
 class TestNanoCube:
