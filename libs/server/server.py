@@ -1,6 +1,18 @@
 import argparse
 import logging
+from libs.server.loader import create_nanocube, load_data_in_cube
 from libs.server.interface import Interface
+
+
+def init_parser():
+    parser = argparse.ArgumentParser(description="NanocubeBD: Real-time database")
+    parser.add_argument('--debug', '-d', action='store_true',
+                        help="Start in Debug mode")
+    parser.add_argument('--port', '-p', type=int, default=5000,
+                        help="Interface port")
+    args = parser.parse_args()
+    s = ServerManager(args)
+    s.start()
 
 
 class ServerManager(Interface):
@@ -41,15 +53,22 @@ class ServerManager(Interface):
         else:
             return self._send_success(self.cubes[cube_name].info)
 
-def init_parser():
-    parser = argparse.ArgumentParser(description="NanocubeBD: Real-time database")
-    parser.add_argument('--debug', '-d', action='store_true',
-                        help="Start in Debug mode")
-    parser.add_argument('--port', '-p', type=int, default=5000,
-                        help="Interface port")
-    args = parser.parse_args()
-    s = ServerManager(args)
-    s.start()
+    def do_load(self, data):
+        config_path = data.get('config')
+        input_path = data.get('input')
+
+        try:
+            cube, parsing_method = create_nanocube(config_path)
+            if self.cubes.get(cube.name) is not None:
+                raise Exception("Cube already exists")
+            else:
+                self.cubes[cube.name] = cube
+            load_data_in_cube(cube, parsing_method, input_path)
+        except Exception, e:
+            return self._send_error(e)
+        else:
+            return self._send_success(cube.info)
+
 
 if __name__ == '__main__':
     init_parser()

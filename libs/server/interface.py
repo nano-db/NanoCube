@@ -31,7 +31,7 @@ class Interface(object):
         self._postcmd(msg, ret)
         self.socket.send_json(ret)
 
-    def _precmd(self, msg):
+    def _precmd(self, cmd, msg):
         pass
 
     def _postcmd(self, msg, ret):
@@ -46,10 +46,13 @@ class Interface(object):
 
     @staticmethod
     def _send_error(error):
+        if isinstance(error, Exception):
+            error = str(error)
+
         return {
             "status": "error",
             "error": error
         }
 
     def _not_found(self, cmd_name):
-        return self.send_error("{} not found".format(cmd_name))
+        return self._send_error("{} not found".format(cmd_name))
