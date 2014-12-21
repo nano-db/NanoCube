@@ -1,13 +1,12 @@
 import os
 from cmd import Cmd
-
-from libs.shared.connector import Connector
+from nanodb_driver.driver import Driver
 
 
 class CommandParser(Cmd):
     def __init__(self, args):
         Cmd.__init__(self)
-        self.connector = Connector(args.port)
+        self.connector = Driver(port=args.port)
         self.cache = None
 
         if not self.connector.is_connected:
