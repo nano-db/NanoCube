@@ -14,13 +14,13 @@ def readme():
 
 setup(
     name="nanodb",
-    version="0.3",
+    version="0.4.0",
     license="Apache License 2.0",
     author="Pierre-Marie Dartus",
     author_email="dartus.pierremarie@gmail.com",
     url="https://github.com/pmdartus/NanoCube",
     description="In memory database for geolocated and temporal data",
-    download_url="https://github.com/pmdartus/NanoCube/tarball/v0.3",
+    download_url="https://github.com/pmdartus/NanoCube/tarball/v0.4",
     long_description=readme(),
     packages=find_packages(exclude=['test']),
     install_requires=reqs(),
