@@ -1,6 +1,5 @@
 import copy
 import sys
-import re
 from math import floor
 from datetime import timedelta, datetime
 
@@ -166,21 +165,57 @@ class TimeSerieTable(object):
         return size
 
     def dump(self):
-        ret = u"{0.id}: s: {0.start} ".format(self)
-        table = [e['sum'] for e in self.table]
-        ret += u"t: {}\n".format(str(table))
+        ret = u"t|{0.id}|{0.start}|".format(self)
+        formatted_array = ""
+        in_row = 0
+        prev = 0
+        for i, e in enumerate(self.table):
+            if i == 0:
+                formatted_array += str(e['sum'])
+                prev = e['sum']
+            elif self.table[i - 1]['sum'] != self.table[i]['sum']:
+                if in_row > 1:
+                    formatted_array += ':{},'.format(str(in_row))
+                else:
+                    formatted_array += ","
+                formatted_array += str(e['sum'] - prev)
+                in_row = 1
+                prev = e['sum']
+            else:
+                in_row += 1
+        if in_row > 0:
+            formatted_array += ':{}'.format(str(in_row))
+        ret += u"{}\n".format(formatted_array)
         return ret
 
     @classmethod
     def load(cls, line):
-        m = re.search("(\d+): s: (.+) t: (.+)", line)
-        new_elem = TimeSerieTable(int(m.group(1)))
-        new_elem.start = datetime.strptime(m.group(2), "%Y-%m-%d %H:%M:%S")
-        table = eval(m.group(3))
-        new_elem.table.append({"sum": table[0], "count": table[0]})
-        for i in range(1, len(table)):
-            new_elem.table.append({
-                "sum": table[i],
-                "count": table[i] - table[i - 1]
-            })
+        new_elem = TimeSerieTable(int(line[0]))
+        new_elem.start = datetime.strptime(line[1], "%Y-%m-%d %H:%M:%S")
+        formatted_table = line[2].split(',')
+
+        if ":" in formatted_table[0]:
+            s = formatted_table[0].split(':')
+            for _ in range(int(s[1])):
+                new_elem.table.append({"sum": int(s[0]), "count": int(s[0])})
+        else:
+            new_elem.table.append({"sum": int(formatted_table[0]), "count": int(formatted_table[0])})
+
+        last_val = new_elem.table[0]['sum']
+        for i in range(1, len(formatted_table)):
+            if ':' in formatted_table[i]:
+                s = formatted_table[i].split(':')
+                last_val = last_val + int(s[0])
+                for _ in range(int(s[i])):
+                    new_elem.table.append({
+                        "sum": last_val,
+                        "count": int(s[0])
+                    })
+            else:
+                last_val = last_val + int(formatted_table[i])
+                new_elem.table.append({
+                    "sum": last_val,
+                    "count": int(formatted_table[i])
+                })
+
         return new_elem

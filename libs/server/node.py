@@ -1,5 +1,4 @@
 import sys
-import re
 
 
 class Node(object):
@@ -124,43 +123,44 @@ class Node(object):
         return size
 
     def dump(self):
-        ret = u"{}: ".format(self.id)
-        if len(self.proper_children) > 0:
-            ref = {key: self.proper_children[key].id for key in self.proper_children}
-            ret += u"pch: {} ".format(str(ref))
-        if len(self.shared_children) > 0:
-            ref = {key: self.shared_children[key].id for key in self.shared_children}
-            ret += u"sch: {} ".format(str(ref))
+        ret = u"n|{}|".format(self.id)
+
+        ref = {key: self.proper_children[key].id for key in self.proper_children}
+        if len(ref) > 0:
+            ret += u"{}".format(str(ref))
+        ret += u"|"
+
+        ref = {key: self.shared_children[key].id for key in self.shared_children}
+        if len(ref) > 0:
+            ret += u"{}".format(str(ref))
+        ret += u"|"
 
         if self.has_proper_content:
-            ret += u"pco: {} ".format(self.proper_content.id)
+            ret += u"{}|".format(self.proper_content.id)
         else:
-            ret += u"sco: {} ".format(self.shared_content.id)
+            ret += u"|{}".format(self.shared_content.id)
 
         return ret + "\n"
 
     @classmethod
     def load(cls, line, nodes):
-        pattern = "(\d+): (?:pch: ([^p|s]+))?(?:sch: ([^p|s]+))?(?:(?:pco: (.+))|(?:sco: (.+)))"
-        m = re.search(pattern, line)
-
-        id = int(m.group(1))
+        id = int(line[0])
         node = Node(id)
 
-        if m.group(2) is not None:
-            node.proper_children = eval(m.group(2))
+        if len(line[1]) > 0:
+            node.proper_children = eval(line[1])
             for key in node.proper_children:
                 val = node.proper_children[key]
                 node.proper_children[key] = nodes[val]
-        if m.group(3) is not None:
-            node.shared_children = eval(m.group(3))
+        if len(line[2]) > 0:
+            node.shared_children = eval(line[2])
             for key in node.shared_children:
                 val = node.shared_children[key]
                 node.shared_children[key] = nodes[val]
 
-        if m.group(4) is not None:
-            node.proper_content = nodes[int(m.group(4))]
+        if len(line[3]) > 0:
+            node.proper_content = nodes[int(line[3])]
         else:
-            node.shared_content= nodes[int(m.group(5))]
+            node.shared_content= nodes[int(line[4])]
 
         return node
