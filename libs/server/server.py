@@ -86,10 +86,13 @@ class ServerManager(Interface):
             return self._send_error(error)
         else:
             cube = self.cubes.get(cube_name)
-            file_name = "data/{}.nano".format(cube.name)
-            dump(cube, file_name)
+            if data.get('path') is not None:
+                path = data.get('path')
+            else:
+                path = "data/{}.nano".format(cube.name)
+            dump(cube, path)
             return self._send_success({
-                'file': file_name
+                'file': path
             })
 
     def do_drop(self, data):
