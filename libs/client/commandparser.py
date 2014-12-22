@@ -27,6 +27,8 @@ class CommandParser(Cmd):
         return res
 
     def do_list(self, _):
+        """list
+        List all the cubes already loaded in nanodb"""
         cubes = self.connector.list_cubes()
         self.cache = cubes
         pattern = '- {0}      Size: {1}      Loading: {2}'
@@ -34,6 +36,8 @@ class CommandParser(Cmd):
             print(pattern.format(cube['name'], cube['count'], cube['is_loading']))
 
     def do_info(self, args):
+        """info <cube name>
+        Return cube information"""
         name = args.strip()
         try:
             info = self.connector.get_information(name)
@@ -47,6 +51,10 @@ class CommandParser(Cmd):
         return self._cube_start_with(text)
 
     def do_load(self, args):
+        """load <csv file> <yml file> | load <nano file>
+        Load in server a cube. The command can receive as attribute a .csv
+        file and a configuration file or an already serialized cube stored
+        in a .nano file"""
         args = args.strip().split(" ")
         if len(args) > 2 or len(args) == 0:
             print('[Error] An input file and a configuration file are needed')
@@ -69,8 +77,21 @@ class CommandParser(Cmd):
             print('[Error] ' + str(e))
 
     def do_serialize(self, args):
+        """serialize <cube name> <path>
+        Serialize a cube in a .nano file. The path parameter specify where
+        the cube will be store."""
+        args = args.strip().split(" ")
+        if len(args) < 1:
+            print('[Error] A cube name should at least be specified.')
+
         try:
-            self.connector.serialize(args)
+            if len(args) == 2:
+                ret = self.connector.serialize(args[0], args[1])
+            else:
+                ret = self.connector.serialize(args[0])
+
+            path = ret.get('file')
+            print(path)
         except Exception, e:
             print('[Error] ' + str(e))
 
@@ -78,6 +99,8 @@ class CommandParser(Cmd):
         return self._cube_start_with(text)
 
     def do_drop(self, args):
+        """drop <cube name>
+        Delete an existing cube in th server"""
         try:
             self.connector.drop(args)
         except Exception, e:
