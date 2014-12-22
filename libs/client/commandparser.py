@@ -86,9 +86,12 @@ class CommandParser(Cmd):
 
         try:
             if len(args) == 2:
-                self.connector.serialize(args[0], args[1])
+                ret = self.connector.serialize(args[0], args[1])
             else:
-                self.connector.serialize(args[0])
+                ret = self.connector.serialize(args[0])
+
+            path = ret.get('file')
+            print(path)
         except Exception, e:
             print('[Error] ' + str(e))
 
