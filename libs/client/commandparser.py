@@ -88,7 +88,8 @@ class CommandParser(Cmd):
             if len(args) == 2:
                 ret = self.connector.serialize(args[0], args[1])
             else:
-                ret = self.connector.serialize(args[0])
+                current_path = os.path.join(os.getcwd(), args[0] + ".nano")
+                ret = self.connector.serialize(args[0], current_path)
 
             path = ret.get('file')
             print(path)

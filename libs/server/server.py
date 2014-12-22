@@ -84,15 +84,13 @@ class ServerManager(Interface):
         if self.cubes.get(cube_name) is None:
             error = "Cube '{}' not found".format(cube_name)
             return self._send_error(error)
+        if data.get('path') is None:
+            return self._send_error("No path provided to store the cube")
         else:
             cube = self.cubes.get(cube_name)
-            if data.get('path') is not None:
-                path = data.get('path')
-            else:
-                path = "data/{}.nano".format(cube.name)
-            dump(cube, path)
+            dump(cube, data.get('path'))
             return self._send_success({
-                'file': path
+                'file': data.get('path')
             })
 
     def do_drop(self, data):
