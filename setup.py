@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 def readme():
-    with open('README.md') as readme:
+    with open('README.rst') as readme:
         return readme.read()
 
 
@@ -13,7 +13,7 @@ setup(
     author_email="dartus.pierremarie@gmail.com",
     url="https://github.com/pmdartus/NanoCube",
     description="In memory database for geolocated and temporal data",
-    download_url="https://github.com/pmdartus/NanoCube/tarball/v0.4.1",
+    download_url="https://github.com/nano-db/NanoCube",
     long_description=readme(),
     packages=find_packages(exclude=['test']),
     install_requires=[
