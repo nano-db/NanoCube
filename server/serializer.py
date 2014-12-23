@@ -1,9 +1,8 @@
 import io
-import re
 
-from libs.server.nanocube import NanoCube
-from libs.server.node import Node
-from libs.server.timeserietable import TimeSerieTable
+from .nanocube import NanoCube
+from .node import Node
+from .timeserietable import TimeSerieTable
 
 
 def dumps(cube):

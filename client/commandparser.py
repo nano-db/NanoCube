@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 from cmd import Cmd
 from nanodb_driver.driver import Driver

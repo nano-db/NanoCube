@@ -1,7 +1,7 @@
 import sys
 
-from libs.server.node import Node
-from libs.server.timeserietable import TimeSerieTable
+from .node import Node
+from .timeserietable import TimeSerieTable
 
 
 class NanoCube(object):

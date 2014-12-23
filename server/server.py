@@ -1,8 +1,10 @@
 import argparse
 import logging
-from libs.server.serializer import dump
-from libs.server.loader import create_nanocube, load_data_in_cube, load_from_nano_file
-from libs.server.interface import Interface
+
+from . import __version__
+from .serializer import dump
+from .loader import create_nanocube, load_data_in_cube, load_from_nano_file
+from .interface import Interface
 
 
 def init_parser():
@@ -11,9 +13,16 @@ def init_parser():
                         help="Start in Debug mode")
     parser.add_argument('--port', '-p', type=int, default=5000,
                         help="Interface port")
+    parser.add_argument('--version', '-v', action='store_true',
+                        help="Current version of NanoDB")
+
     args = parser.parse_args()
-    s = ServerManager(args)
-    s.start()
+
+    if args.version:
+        print("NanoDB version: v{}".format(__version__))
+    else:
+        s = ServerManager(args)
+        s.start()
 
 
 class ServerManager(Interface):

@@ -1,33 +1,30 @@
 from setuptools import setup, find_packages
-from pip.req import parse_requirements
-import os
-
-def reqs():
-    req_path = os.path.join(os.path.dirname(__file__), "requirements.txt")
-    install_reqs = parse_requirements(req_path)
-    return [str(ir.req) for ir in install_reqs]
 
 def readme():
-    with open('README.md') as readme:
+    with open('README.rst') as readme:
         return readme.read()
 
 
 setup(
     name="nanodb",
-    version="0.4.1",
+    version="0.4.2",
     license="Apache License 2.0",
     author="Pierre-Marie Dartus",
     author_email="dartus.pierremarie@gmail.com",
     url="https://github.com/pmdartus/NanoCube",
     description="In memory database for geolocated and temporal data",
-    download_url="https://github.com/pmdartus/NanoCube/tarball/v0.4.1",
+    download_url="https://github.com/nano-db/NanoCube",
     long_description=readme(),
     packages=find_packages(exclude=['test']),
-    install_requires=reqs(),
+    install_requires=[
+        "pyzmq>=14.4.1",
+        "PyYAML==3.11",
+        "nanodb_driver"
+    ],
     entry_points={
         "console_scripts": [
-            "nanodb_server=libs.server.server:init_parser",
-            "nanodb=libs.client.cli:init_parser"
+            "nanodb_server=server.server:init_parser",
+            "nanodb=client.cli:init_parser"
         ]
     },
     include_package_data=True,

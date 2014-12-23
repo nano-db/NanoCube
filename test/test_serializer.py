@@ -4,8 +4,8 @@ from datetime import datetime
 from nose.tools import eq_
 
 from helpers import mock_cube
-from libs.server.querybuilder import QueryBuilder
-import libs.server.serializer as serializer
+from server.querybuilder import QueryBuilder
+import server.serializer as serializer
 
 
 class TestSerializer:
