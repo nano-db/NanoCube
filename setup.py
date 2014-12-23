@@ -7,7 +7,7 @@ def readme():
 
 setup(
     name="nanodb",
-    version="0.4.1",
+    version="0.4.2",
     license="Apache License 2.0",
     author="Pierre-Marie Dartus",
     author_email="dartus.pierremarie@gmail.com",
