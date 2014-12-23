@@ -11,7 +11,7 @@ HTTPie: a CLI, cURL-like tool for humans
 
 
 In-memory data structure for spatiotemporal data cubes. Project based on research made 
-by [Information Visualization department](http://www.research.att.com/infovis) at AT&T.
+by `Information Visualization department <http://www.research.att.com/infovis>`_ at AT&T.
 
 ============
 Installation
