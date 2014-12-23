@@ -6,7 +6,7 @@ by [Information Visualization department](http://www.research.att.com/infovis) a
 ## Installation
 
 ```
-pip install nanodb
+sudo pip install nanodb
 ```
 The package contains following command tools: `nanodb`and `nanodb_server`.
 
