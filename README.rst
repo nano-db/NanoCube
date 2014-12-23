@@ -1,6 +1,6 @@
-****************************************
-HTTPie: a CLI, cURL-like tool for humans
-****************************************
+******
+Nanodb
+******
 
 .. image:: https://travis-ci.org/nano-db/NanoCube.svg?branch=modules-refactor
     :target: https://travis-ci.org/nano-db/NanoCube
