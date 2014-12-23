@@ -1,8 +1,9 @@
 import argparse
 import logging
-from libs.server.serializer import dump
-from libs.server.loader import create_nanocube, load_data_in_cube, load_from_nano_file
-from libs.server.interface import Interface
+
+from .serializer import dump
+from .loader import create_nanocube, load_data_in_cube, load_from_nano_file
+from .interface import Interface
 
 
 def init_parser():

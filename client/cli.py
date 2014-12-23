@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import argparse
-from libs.client.commandparser import CommandParser
+from .commandparser import CommandParser
+
 
 def init_parser():
     parser = argparse.ArgumentParser(description="NanocubeBD client")
@@ -12,6 +15,3 @@ def init_parser():
         prompt.cmdloop()
     except KeyboardInterrupt:
         prompt.do_exit(None)
-
-if __name__ == '__main__':
-    init_parser()
