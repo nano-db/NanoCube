@@ -165,7 +165,7 @@ class TimeSerieTable(object):
         return size
 
     def dump(self):
-        ret = u"t|{0.id}|{0.start}|".format(self)
+        ret = u"\nt|{0.id}|{0.start}|".format(self)
         formatted_array = ""
         in_row = 0
         prev = 0
@@ -185,7 +185,7 @@ class TimeSerieTable(object):
                 in_row += 1
         if in_row > 0:
             formatted_array += ':{}'.format(str(in_row))
-        ret += u"{}\n".format(formatted_array)
+        ret += u"{}".format(formatted_array)
         return ret
 
     @classmethod

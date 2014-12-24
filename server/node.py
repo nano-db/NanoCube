@@ -1,4 +1,5 @@
 import sys
+import json
 
 
 class Node(object):
@@ -123,16 +124,16 @@ class Node(object):
         return size
 
     def dump(self):
-        ret = u"n|{}|".format(self.id)
+        ret = u"\nn|{}|".format(self.id)
 
         ref = {key: self.proper_children[key].id for key in self.proper_children}
         if len(ref) > 0:
-            ret += u"{}".format(str(ref))
+            ret += u"{}".format(json.dumps(ref))
         ret += u"|"
 
         ref = {key: self.shared_children[key].id for key in self.shared_children}
         if len(ref) > 0:
-            ret += u"{}".format(str(ref))
+            ret += u"{}".format(json.loads(ref))
         ret += u"|"
 
         if self.has_proper_content:
@@ -140,7 +141,7 @@ class Node(object):
         else:
             ret += u"|{}".format(self.shared_content.id)
 
-        return ret + "\n"
+        return ret
 
     @classmethod
     def load(cls, line, nodes):
@@ -148,12 +149,12 @@ class Node(object):
         node = Node(id)
 
         if len(line[1]) > 0:
-            node.proper_children = eval(line[1])
+            node.proper_children = json.loads(line[1])
             for key in node.proper_children:
                 val = node.proper_children[key]
                 node.proper_children[key] = nodes[val]
         if len(line[2]) > 0:
-            node.shared_children = eval(line[2])
+            node.shared_children = json.loads(line[2])
             for key in node.shared_children:
                 val = node.shared_children[key]
                 node.shared_children[key] = nodes[val]

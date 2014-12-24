@@ -1,5 +1,5 @@
 import io
-
+import json
 from .nanocube import NanoCube
 from .node import Node
 from .timeserietable import TimeSerieTable
@@ -65,9 +65,9 @@ def _load_cube(stream):
         elif i == 2:
             gran = int(line)
         elif i == 3:
-            dim = eval(line)
+            dim = line.split(',')
         elif i == 4:
-            dim_mapping = eval(line)
+            dim_mapping = json.loads(line)
 
     cube = NanoCube(dim, name=name, loc_granularity=gran)
     cube.count = count
@@ -96,8 +96,13 @@ def _load_nodes(stream):
 
 def _dump_cube(cube, stream):
     res = u"{0.name}\n{0.count}\n{0.location_granularity}\n".format(cube)
-    res += u"{}\n".format(str(cube.dimensions))
-    res += u"{}\n".format(str(cube.dim_mapping))
+    for i, dim in enumerate(cube.dimensions):
+        res += dim
+        if i != len(cube.dimensions) - 1:
+            res += ","
+        else:
+            res += "\n"
+    res += u"{}".format(json.dumps(cube.dim_mapping))
     stream.write(res)
 
 
