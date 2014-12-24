@@ -39,7 +39,7 @@ publish: test-all
 	@echo $(TAG)Testing and publishing$(END)
 	@echo "$(VERSION)"
 	python setup.py register
-	python setup.py sdist uplaod
+	python setup.py sdist upload
 	@echo
 
 clean:

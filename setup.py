@@ -1,3 +1,4 @@
+from server import __version__
 from setuptools import setup, find_packages
 
 def readme():
@@ -7,7 +8,7 @@ def readme():
 
 setup(
     name="nanodb",
-    version="0.4.2",
+    version=__version__,
     license="Apache License 2.0",
     author="Pierre-Marie Dartus",
     author_email="dartus.pierremarie@gmail.com",
