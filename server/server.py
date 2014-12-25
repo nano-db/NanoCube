@@ -2,7 +2,7 @@ import argparse
 import logging
 
 from . import __version__
-from .serializer import dump
+from .serializer import dumps
 from .loader import create_nanocube, load_data_in_cube, load_from_nano_file
 from .interface import Interface
 
@@ -97,7 +97,7 @@ class ServerManager(Interface):
             return self._send_error("No path provided to store the cube")
         else:
             cube = self.cubes.get(cube_name)
-            dump(cube, data.get('path'))
+            dumps(cube)
             return self._send_success({
                 'file': data.get('path')
             })

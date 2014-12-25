@@ -1,12 +1,12 @@
 ---
-Name: "Crime"
+Name: "Simple"
 Location granularity: 25
 Dimensions:
-    - Name: "Type"
-      Key: "crime"
+    - Name: "Devise"
+      Key: "Devise"
 Meta:
-    Time key: "time"
-    Time format: "%m/%d/%Y %I:%M:%S %p"
+    Time key: "Time"
+    Time format: "%m/%d/%Y %H:%M:%S"
     Time bin size: "3600"
     Longitude key: "Longitude"
     Latitude key: "Latitude"

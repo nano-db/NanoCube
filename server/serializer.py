@@ -1,5 +1,7 @@
 import io
 import json
+import logging
+import cStringIO
 from .nanocube import NanoCube
 from .node import Node
 from .timeserietable import TimeSerieTable
@@ -7,28 +9,30 @@ from .timeserietable import TimeSerieTable
 
 def dumps(cube):
     '''Serialize a cube and return the string'''
-    stream = io.StringIO()
-    _dumper(cube, stream)
-    res = stream.getvalue()
-    stream.close()
-    return res
+    return _dumper(cube)
 
 
 def dump(cube, file_name):
     '''Serialize a cube and write it to the passed file'''
-    stream = io.open(file_name, mode="w")
-    _dumper(cube, stream)
+    stream = open(file_name, mode="w")
+    res = _dumper(cube)
+    stream.write(res)
     stream.close()
 
 
-def _dumper(cube, stream):
-    _dump_cube(cube, stream)
-    _dump_nodes(cube.world, stream)
+def _dumper(cube):
+    logger = logging.getLogger("nanoDB.serializer." + cube.name)
+    logger.info("Start serialization")
+    res = _dump_cube(cube)
+    _dump_nodes(cube.world, res)
+    res = '\n'.join(res)
+    logger.info("End serialization")
+    return res
 
 
 def loads(string):
     '''Unserialize a cube from the passed string and return it'''
-    stream = io.StringIO(string)
+    stream = cStringIO.StringIO(string)
     cube = _loader(stream)
     stream.close()
     return cube
@@ -94,25 +98,22 @@ def _load_nodes(stream):
     return last_node
 
 
-def _dump_cube(cube, stream):
-    res = u"{0.name}\n{0.count}\n{0.location_granularity}\n".format(cube)
-    for i, dim in enumerate(cube.dimensions):
-        res += dim
-        if i != len(cube.dimensions) - 1:
-            res += ","
-        else:
-            res += "\n"
-    res += u"{}".format(json.dumps(cube.dim_mapping))
-    stream.write(res)
+def _dump_cube(cube):
+    return [
+        cube.name,
+        str(cube.count),
+        str(cube.location_granularity),
+        ','.join(cube.dimensions),
+        json.dumps(cube.dim_mapping)
+    ]
 
 
-def _dump_nodes(node, stream):
-
+def _dump_nodes(node, res):
     if not isinstance(node, TimeSerieTable):
         for key in node.proper_children:
-            _dump_nodes(node.proper_children[key], stream)
+            _dump_nodes(node.proper_children[key], res)
 
         if node.has_proper_content:
-            _dump_nodes(node.proper_content, stream)
+            _dump_nodes(node.proper_content, res)
 
-    return stream.write(node.dump())
+    return res.append(node.dump())

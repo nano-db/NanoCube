@@ -165,28 +165,37 @@ class TimeSerieTable(object):
         return size
 
     def dump(self):
-        ret = u"\nt|{0.id}|{0.start}|".format(self)
-        formatted_array = ""
+        ret = [
+            't',
+            str(self.id),
+            str(self.start)
+        ]
+
+        time_table = []
         in_row = 0
         prev = 0
-        for i, e in enumerate(self.table):
+        for i in range(len(self.table)):
+            current_val = self.table[i]['count']
             if i == 0:
-                formatted_array += str(e['sum'])
-                prev = e['sum']
-            elif self.table[i - 1]['sum'] != self.table[i]['sum']:
+                prev = current_val
+            elif current_val != prev:
                 if in_row > 1:
-                    formatted_array += ':{},'.format(str(in_row))
+                    time_table.append('{0}:{1},'.format(str(prev), str(in_row)))
                 else:
-                    formatted_array += ","
-                formatted_array += str(e['sum'] - prev)
+                    time_table.append(str(prev))
                 in_row = 1
-                prev = e['sum']
+                prev = current_val
             else:
                 in_row += 1
-        if in_row > 0:
-            formatted_array += ':{}'.format(str(in_row))
-        ret += u"{}".format(formatted_array)
-        return ret
+        if in_row > 1:
+            time_table.append('{0}:{1},'.format(str(prev), str(in_row)))
+        else:
+            time_table.append(str(prev))
+
+        ret.append(','.join(time_table))
+
+
+        return '|'.join(ret)
 
     @classmethod
     def load(cls, line):

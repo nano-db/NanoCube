@@ -124,24 +124,32 @@ class Node(object):
         return size
 
     def dump(self):
-        ret = u"\nn|{}|".format(self.id)
+        ret = [
+            'n',
+            str(self.id),
 
-        ref = {key: self.proper_children[key].id for key in self.proper_children}
-        if len(ref) > 0:
-            ret += u"{}".format(json.dumps(ref))
-        ret += u"|"
+        ]
 
-        ref = {key: self.shared_children[key].id for key in self.shared_children}
-        if len(ref) > 0:
-            ret += u"{}".format(json.loads(ref))
-        ret += u"|"
+        if len(self.proper_children) > 0:
+            pch = {key: self.proper_children[key].id for key in self.proper_children}
+            ret.append(json.dumps(pch))
+        else:
+            ret.append('')
+
+        if len(self.shared_children) > 0:
+            sch = {key: self.shared_children[key].id for key in self.shared_children}
+            ret.append(sch)
+        else:
+            ret.append('')
 
         if self.has_proper_content:
-            ret += u"{}|".format(self.proper_content.id)
+            ret.append(str(self.proper_content.id))
+            ret.append('')
         else:
-            ret += u"|{}".format(self.shared_content.id)
+            ret.append('')
+            ret.append(str(self.shared_content.id))
 
-        return ret
+        return '|'.join(ret)
 
     @classmethod
     def load(cls, line, nodes):
