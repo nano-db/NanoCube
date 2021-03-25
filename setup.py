@@ -19,7 +19,7 @@ setup(
     packages=find_packages(exclude=['test']),
     install_requires=[
         "pyzmq>=14.4.1",
-        "PyYAML==3.11",
+        "PyYAML==5.4",
         "nanodb_driver"
     ],
     entry_points={
